@@ -10,26 +10,7 @@ services:
       - mongodb_data:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-
-  fastapi:
-    build:
-      context: ./fastapi
-    container_name: fastapi
-    ports:
-      - "8000:8000"
-    depends_on:
-      - mongodb
-
-  nestjs:
-    build:
-      context: ./nestjs
-    container_name: nestjs
-    ports:
-      - "3000:3000"
-    depends_on:
-      - mongodb
-      - fastapi
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
 volumes:
   mongodb_data:
