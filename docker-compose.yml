@@ -10,7 +10,7 @@ services:
       - mongodb_data:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_ROOT_PASSWORD: example
 
   fastapi:
     build:
