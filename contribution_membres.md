@@ -8,7 +8,54 @@ Préparer les données et développer le moteur de recommandation.
 ### Compétences évaluées couvertes
 - Générer / récolter / adapter les données
 - Paramétrer l’environnement IA
+- Coder le mod## Membre 1 — Data / IA / Modèle
+
+### Responsabilité principale
+Préparer les données et développer le moteur de recommandation.
+
+### Compétences évaluées couvertes
+- Générer / récolter / adapter les données
+- Paramétrer l’environnement IA
 - Coder le modèle
+- Entraîner le modèle
+- Tester les performances
+- Ajuster le modèle
+
+### Tâches concrètes
+- Identifier les données utiles :
+  - Nutrition
+  - Sport
+  - Objectifs utilisateurs
+  - Allergies
+  - Restrictions
+  - Niveau sportif
+- Préparer les données :
+  - Nettoyage
+  - Transformation
+  - Features
+  - Format d’entraînement
+- Choisir l’approche IA :
+  - Modèle supervisé si dataset labellisé
+  - Moteur hybride règles + scoring si données limitées
+  - NLP / LLM local ou API si besoin
+  - Vision par ordinateur pour photo de repas si faisable
+- Entraîner ou configurer le modèle
+- Tester les résultats :
+  - Précision
+  - Rappel
+  - F1-score si applicable
+  - Exemples de cas utilisateurs
+- Documenter les choix
+
+### Livrables à produire
+- Document choix modèle
+- Notebook ou scripts d’entraînement
+- Métriques
+- Exemples de recommandations
+- Limites du modèle
+
+---
+èle
 - Entraîner le modèle
 - Tester les performances
 - Ajuster le modèle
