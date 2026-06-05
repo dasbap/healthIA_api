@@ -1,5 +1,10 @@
 HealthIA API
 
+## Specifications
+
+Les specifications operationnelles et contractuelles sont documentees dans
+[`SPECIFICATIONS.md`](SPECIFICATIONS.md).
+
 ## Docker
 
 All local checks and services should run through Docker Compose.
