@@ -1,0 +1,39 @@
+# Node.js dependencies
+node_modules/
+
+# Python dependencies
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# MongoDB data
+mongodb_data/
+
+# AI Service - données et modèles
+ai-service/data/raw/
+ai-service/data/processed/
+ai-service/data/training/
+ai-service/data/models/
+ai-service/data/sample_images/
+ai-service/notebooks/.ipynb_checkpoints/
+ai-service/**/__pycache__/
+ai-service/.env
+
+.venv
