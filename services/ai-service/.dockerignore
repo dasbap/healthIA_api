@@ -1,0 +1,6 @@
+.pytest_cache
+.venv
+__pycache__
+*.pyc
+app/**/__pycache__
+app/models/*.joblib

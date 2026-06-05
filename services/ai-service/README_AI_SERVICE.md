@@ -2,15 +2,19 @@
 
 FastAPI microservice for meal photo analysis, nutrition recommendations, sport recommendations, recommendation history and feedback.
 
-## Run locally
+## Run with Docker
 
 ```bash
-cd services/ai-service
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8001
+docker compose up --build ai-service
 ```
 
 Swagger is available at `http://localhost:8001/docs`.
+
+Run tests through Docker:
+
+```bash
+docker compose run --rm ai-service pytest
+```
 
 ## Environment
 

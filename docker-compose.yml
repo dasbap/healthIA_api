@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mongodb:
     image: mongo:6.0
@@ -11,6 +9,21 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
+
+  ai-service:
+    build:
+      context: ./services/ai-service
+    container_name: healthia-ai-service
+    depends_on:
+      - mongodb
+    ports:
+      - "8001:8001"
+    environment:
+      AI_SERVICE_ENVIRONMENT: docker
+      AI_SERVICE_MONGO_ENABLED: "true"
+      AI_SERVICE_MONGO_URI: mongodb://root:rootpassword@mongodb:27017
+      AI_SERVICE_MONGO_DB: healthia
+      AI_SERVICE_MONGO_TIMEOUT_MS: 1200
 
 volumes:
   mongodb_data:
