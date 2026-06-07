@@ -4,6 +4,14 @@ HealthIA API
 
 Les specifications operationnelles et contractuelles sont documentees dans
 [`SPECIFICATIONS.md`](SPECIFICATIONS.md).
+Les variables d'environnement d'exemple sont dans [`.env.example`](.env.example).
+
+## OpenAPI
+
+Exports statiques :
+
+- API NestJS : `services/api/openapi.json`
+- Service IA FastAPI : `services/ai-service/openapi.json`
 
 ## Docker
 

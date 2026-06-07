@@ -9,11 +9,18 @@ docker compose up --build ai-service
 ```
 
 Swagger is available at `http://localhost:8001/docs`.
+The exported OpenAPI file is `services/ai-service/openapi.json`.
 
 Run tests through Docker:
 
 ```bash
 docker compose run --rm ai-service pytest
+```
+
+Export OpenAPI:
+
+```bash
+python scripts/export_openapi.py
 ```
 
 ## Environment

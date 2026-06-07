@@ -9,6 +9,7 @@ docker compose up --build api
 ```
 
 Swagger is available at `http://localhost:13000/docs` with the default Docker Compose port mapping.
+The exported OpenAPI file is `services/api/openapi.json`.
 
 ## Environment
 
@@ -19,6 +20,12 @@ JWT_SECRET=development-secret
 JWT_EXPIRES_IN=15m
 AI_SERVICE_URL=http://ai-service:8001
 AI_SERVICE_TOKEN=local-service-token
+```
+
+Export OpenAPI:
+
+```bash
+npm run openapi:export
 ```
 
 ## Endpoints
