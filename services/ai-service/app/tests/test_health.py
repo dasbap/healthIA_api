@@ -15,3 +15,4 @@ def test_app_registers_health_route():
     paths = {route.path for route in app.routes}
 
     assert "/health" in paths
+    assert "/metrics" in paths
