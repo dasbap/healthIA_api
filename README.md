@@ -13,6 +13,7 @@ All local checks and services should run through Docker Compose.
 docker compose up --build
 ```
 
+NestJS Swagger is available at `http://localhost:13000/docs`.
 FastAPI Swagger is available at `http://localhost:8001/docs`.
 
 Run the AI service tests in Docker:

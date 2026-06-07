@@ -23,9 +23,11 @@ AI_SERVICE_MONGO_URI=mongodb://root:rootpassword@localhost:27017
 AI_SERVICE_MONGO_DB=healthia
 AI_SERVICE_MONGO_TIMEOUT_MS=1200
 AI_SERVICE_MONGO_ENABLED=true
+AI_SERVICE_SERVICE_TOKEN=local-service-token
 ```
 
 If MongoDB is unavailable, the API still responds with deterministic fallback recommendations and marks storage as `memory_fallback`.
+When `AI_SERVICE_SERVICE_TOKEN` is set, every `/ai/*` route requires the same value in `X-Service-Token`.
 
 ## NoSQL collections
 
@@ -74,6 +76,8 @@ Example:
 ## Main endpoints
 
 `GET /health`
+
+`GET /metrics`
 
 `POST /ai/meal/analyze`
 

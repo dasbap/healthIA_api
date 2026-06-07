@@ -21,7 +21,7 @@ Swagger FastAPI est disponible sur `http://localhost:8001/docs`.
 
 ### Format standard de reponse
 
-Les endpoints FastAPI retournent actuellement directement les modeles de reponse. L'API principale devrait standardiser toutes les reponses publiques au format suivant :
+Les endpoints FastAPI retournent directement les modeles de reponse. L'API principale NestJS standardise les reponses publiques au format suivant :
 
 ```json
 {
@@ -252,14 +252,14 @@ Contraintes : `rating` entre 1 et 5 ; `comment` optionnel limite a 1000 caracter
 
 ## 3. Authentification et autorisation
 
-Etat actuel : le service IA n'impose pas directement l'authentification utilisateur. L'API principale NestJS porte le controle d'acces public et relaie au service IA un `userId` deja autorise.
+Etat actuel : le service IA n'impose pas directement l'authentification utilisateur final. L'API principale NestJS porte le controle d'acces public, verifie le JWT et les scopes, puis relaie au service IA un `userId` deja autorise.
 
-Etat cible recommande :
+Etat operationnel :
 
 - Methode : JWT Bearer emis par l'API principale apres login.
 - Algorithme : `HS256` en local, `RS256` recommande en production.
 - OAuth : non requis pour le prototype ; a ajouter via fournisseur externe si une connexion sociale ou enterprise est demandee.
-- Duree de vie : access token 15 minutes, refresh token 7 jours.
+- Duree de vie : access token 15 minutes par defaut. Les refresh tokens restent a ajouter si le produit en a besoin.
 - Claims minimaux : `sub`, `email`, `roles`, `scopes`, `iat`, `exp`.
 - Transport : header `Authorization: Bearer <token>`.
 
@@ -278,11 +278,13 @@ Regles d'autorisation :
 
 - Un utilisateur ne peut lire ou ecrire que ses propres donnees, sauf role `admin`.
 - L'API principale valide le JWT et transmet au service IA un `userId` deja autorise.
-- Les appels directs au service IA doivent etre reserves au reseau interne ou proteges par un token de service.
+- Les appels directs au service IA sont proteges par `AI_SERVICE_SERVICE_TOKEN` si la variable est configuree.
 
 ## 4. Modele de donnees NoSQL
 
 Base : MongoDB, base par defaut `healthia`.
+
+Les indexes sont declares dans les schemas Mongoose de l'API principale et crees au demarrage du service IA lorsque MongoDB est disponible.
 
 ### `users`
 
@@ -392,6 +394,8 @@ Chaque sortie IA doit exposer :
 
 En mode fallback, la reponse doit rester valide, explicite et marquee avec `fallbackUsed: true` lorsque le schema le permet.
 
+Le service IA expose des fallbacks deterministes et incremente `ai_fallback_total` lorsque ces chemins sont utilises.
+
 ## 6. Deploiement et infrastructure
 
 ### Containerisation
@@ -414,6 +418,7 @@ Service IA :
 | `AI_SERVICE_MONGO_URI` | `mongodb://root:rootpassword@localhost:27017` | URI MongoDB |
 | `AI_SERVICE_MONGO_DB` | `healthia` | Nom de base |
 | `AI_SERVICE_MONGO_TIMEOUT_MS` | `1200` | Timeout de connexion MongoDB |
+| `AI_SERVICE_SERVICE_TOKEN` | non defini | Token interne optionnel requis sur les routes `/ai/*` |
 
 API principale cible :
 
@@ -424,6 +429,7 @@ API principale cible :
 | `JWT_EXPIRES_IN` | Duree de vie access token |
 | `MONGO_URI` | URI MongoDB |
 | `AI_SERVICE_URL` | URL interne du service IA |
+| `AI_SERVICE_TOKEN` | Token envoye au service IA |
 
 ### CI/CD cible
 
@@ -446,8 +452,8 @@ Orchestration :
 
 Logs :
 
-- Format cible : JSON en production.
-- Champs minimaux : `timestamp`, `level`, `service`, `requestId`, `userIdHash`, `route`, `statusCode`, `durationMs`.
+- Format : JSON cote service IA ; structure standardisee cote API principale.
+- Champs minimaux : `timestamp`, `level`, `service`, `requestId`, `route`, `statusCode`, `durationMs`.
 - Ne pas logger les images, notes libres completes, donnees medicales brutes ou tokens.
 
 Metriques :
@@ -461,10 +467,10 @@ Metriques :
 
 Tracage :
 
-- Propager `X-Request-Id` entre API principale et service IA.
-- Ajouter OpenTelemetry lorsque l'API principale orchestre plusieurs appels.
+- `X-Request-Id` est propage entre API principale et service IA.
+- Ajouter OpenTelemetry si un tracing distribue complet est requis.
 
-Alerting :
+Alerting cible :
 
 - p95 superieur au SLA pendant 10 minutes.
 - Taux 5xx superieur a 2 % pendant 5 minutes.
@@ -479,7 +485,7 @@ HealthIA manipule des donnees potentiellement sensibles. Les exigences suivantes
 - Pseudonymisation : utiliser un identifiant technique `userId`, jamais l'email dans les logs IA.
 - Chiffrement en transit : HTTPS/TLS pour tous les flux externes.
 - Chiffrement au repos : disque chiffre et secrets hors du code source.
-- Mots de passe : hash `bcrypt` ou `argon2id`, jamais de stockage en clair.
+- Mots de passe : hash `bcrypt`, jamais de stockage en clair.
 - Images : stocker des URLs ou references d'objet ; supprimer les images selon une politique de retention.
 - Consentement : afficher clairement l'usage des donnees sante/bien-etre.
 - Droit a suppression : supprimer ou anonymiser `users`, `meal_analyses`, `recommendations`, `feedbacks`, `ai_logs`.
@@ -523,8 +529,6 @@ Commandes actuelles :
 docker compose run --rm ai-service pytest
 ```
 
-Lorsque l'API NestJS sera complete, ajouter :
-
 ```bash
 docker compose run --rm api npm test
 docker compose run --rm api npm run test:e2e
@@ -532,11 +536,12 @@ docker compose run --rm api npm run test:e2e
 
 ## 10. Points ouverts
 
-- Creer les indexes MongoDB au demarrage ou via migration.
-- Ajouter logs JSON, metriques Prometheus et propagation `X-Request-Id`.
+- Ajouter une politique de refresh tokens si des sessions longues sont requises.
+- Ajouter OpenTelemetry pour un tracing distribue complet.
+- Brancher les alertes sur l'outil de supervision cible.
 - Formaliser la politique de retention des donnees.
 - Ajouter OAuth si le produit exige une federation d'identite.
 
 ## Conclusion
 
-La base est suffisante pour demarrer un prototype fonctionnel du service IA. Pour une integration robuste, il faut maintenant contractualiser l'API principale, l'authentification, les indexes MongoDB, les garanties de fallback, l'observabilite et les exigences de securite liees aux donnees sensibles.
+La base est operationnelle pour un prototype integre : API principale, authentification JWT, scopes, service IA, fallback, Docker Compose, indexes MongoDB, tests et observabilite minimale. Avant production, il reste a formaliser la retention, brancher les alertes, choisir le cadre legal exact des donnees traitees et durcir la gestion des secrets.

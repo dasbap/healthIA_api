@@ -8,7 +8,7 @@ NestJS API for public authentication, users and AI service orchestration.
 docker compose up --build api
 ```
 
-Swagger is available at `http://localhost:3000/docs`.
+Swagger is available at `http://localhost:13000/docs` with the default Docker Compose port mapping.
 
 ## Environment
 
@@ -18,6 +18,7 @@ MONGO_URI=mongodb://root:rootpassword@mongodb:27017/healthia?authSource=admin
 JWT_SECRET=development-secret
 JWT_EXPIRES_IN=15m
 AI_SERVICE_URL=http://ai-service:8001
+AI_SERVICE_TOKEN=local-service-token
 ```
 
 ## Endpoints
@@ -33,3 +34,6 @@ AI_SERVICE_URL=http://ai-service:8001
 - `POST /ai/sport/recommend`
 - `GET /ai/recommendations`
 - `POST /ai/feedback`
+- `GET /metrics`
+
+Protected routes require a JWT Bearer token. User and AI routes enforce the scopes embedded in the token.
