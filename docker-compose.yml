@@ -13,6 +13,8 @@ services:
   ai-service:
     build:
       context: ./services/ai-service
+      args:
+        AI_SERVICE_VISION_MODEL_ID: ${AI_SERVICE_VISION_MODEL_ID:-nateraw/food}
     container_name: healthia-ai-service
     depends_on:
       - mongodb
