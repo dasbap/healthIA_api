@@ -8,7 +8,7 @@ export class Feedback {
   @Prop({ required: true, index: true })
   userId: string;
 
-  @Prop({ required: true, index: true })
+  @Prop({ required: true })
   recommendationId: string;
 
   @Prop({ required: true, min: 1, max: 5 })
