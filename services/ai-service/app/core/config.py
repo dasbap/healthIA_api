@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     mongo_uri: str = "mongodb://root:rootpassword@localhost:27017"
     mongo_db: str = "healthia"
     mongo_timeout_ms: int = 1200
+    service_token: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",

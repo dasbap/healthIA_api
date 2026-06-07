@@ -14,41 +14,49 @@ export class AiService {
     return this.get('/health');
   }
 
-  analyzeMeal(userId: string, dto: MealAnalysisDto) {
-    return this.post('/ai/meal/analyze', { userId, ...dto });
+  analyzeMeal(userId: string, dto: MealAnalysisDto, requestId?: string) {
+    return this.post('/ai/meal/analyze', { userId, ...dto }, requestId);
   }
 
-  recommendNutrition(userId: string, dto: NutritionRequestDto) {
-    return this.post('/ai/nutrition/recommend', { userId, ...dto });
+  recommendNutrition(userId: string, dto: NutritionRequestDto, requestId?: string) {
+    return this.post('/ai/nutrition/recommend', { userId, ...dto }, requestId);
   }
 
-  recommendSport(userId: string, dto: SportRequestDto) {
-    return this.post('/ai/sport/recommend', { userId, ...dto });
+  recommendSport(userId: string, dto: SportRequestDto, requestId?: string) {
+    return this.post('/ai/sport/recommend', { userId, ...dto }, requestId);
   }
 
-  history(userId: string, limit = 20) {
-    return this.get(`/ai/recommendations/${encodeURIComponent(userId)}?limit=${limit}`);
+  history(userId: string, limit = 20, requestId?: string) {
+    return this.get(`/ai/recommendations/${encodeURIComponent(userId)}?limit=${limit}`, requestId);
   }
 
-  feedback(userId: string, dto: AiFeedbackDto) {
-    return this.post('/ai/feedback', { userId, ...dto });
+  feedback(userId: string, dto: AiFeedbackDto, requestId?: string) {
+    return this.post('/ai/feedback', { userId, ...dto }, requestId);
   }
 
-  private async get(path: string) {
-    return this.request(path);
+  private async get(path: string, requestId?: string) {
+    return this.request(path, undefined, requestId);
   }
 
-  private async post(path: string, body: unknown) {
+  private async post(path: string, body: unknown, requestId?: string) {
     return this.request(path, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body),
-    });
+    }, requestId);
   }
 
-  private async request(path: string, init?: RequestInit) {
+  private async request(path: string, init?: RequestInit, requestId?: string) {
     try {
-      const response = await fetch(`${this.baseUrl}${path}`, init);
+      const headers = new Headers(init?.headers);
+      if (env.aiServiceToken) {
+        headers.set('x-service-token', env.aiServiceToken);
+      }
+      if (requestId) {
+        headers.set('x-request-id', requestId);
+      }
+
+      const response = await fetch(`${this.baseUrl}${path}`, { ...init, headers });
       const payload = await response.json().catch(() => ({}));
 
       if (!response.ok) {

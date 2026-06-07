@@ -4,4 +4,5 @@ export const env = {
   jwtSecret: process.env.JWT_SECRET ?? 'development-secret',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '15m',
   aiServiceUrl: process.env.AI_SERVICE_URL ?? 'http://localhost:8001',
+  aiServiceToken: process.env.AI_SERVICE_TOKEN,
 };

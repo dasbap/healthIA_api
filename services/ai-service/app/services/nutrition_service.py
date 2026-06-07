@@ -1,5 +1,6 @@
 from app.database.repositories.ai_log_repository import AiLogRepository
 from app.database.repositories.recommendation_repository import RecommendationRepository
+from app.core.metrics import metrics
 from app.recommender.nutrition_recommender import recommend_nutrition
 from app.schemas.nutrition_schema import NutritionRecommendationRequest
 
@@ -11,6 +12,9 @@ class NutritionService:
 
     async def recommend(self, payload: NutritionRecommendationRequest) -> dict:
         recommendation = recommend_nutrition(payload)
+        metrics.ai_recommendation_total += 1
+        if recommendation.get("fallbackUsed"):
+            metrics.ai_fallback_total += 1
         document = {
             "userId": payload.userId,
             "type": "nutrition",

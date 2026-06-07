@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { ScopesGuard } from '../auth/scopes.guard';
 import { Feedback, FeedbackSchema } from './schemas/feedback.schema';
 import { Recommendation, RecommendationSchema } from './schemas/recommendation.schema';
 import { RecommendationsController } from './recommendations.controller';
@@ -14,6 +15,6 @@ import { RecommendationsService } from './recommendations.service';
     ]),
   ],
   controllers: [RecommendationsController],
-  providers: [RecommendationsService],
+  providers: [RecommendationsService, ScopesGuard],
 })
 export class RecommendationsModule {}

@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
+import { MetricsService } from '../metrics.service';
 import { nowIso } from '../utils/dates';
 
 const errorCodes: Record<number, string> = {
@@ -19,6 +20,8 @@ const errorCodes: Record<number, string> = {
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  constructor(private readonly metrics?: MetricsService) {}
+
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -33,6 +36,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       typeof payload === 'object' && payload && 'message' in payload
         ? payload.message
         : payload;
+
+    this.metrics?.record(request.route?.path ?? request.url, request.method, status, 0);
 
     response.status(status).json({
       success: false,
