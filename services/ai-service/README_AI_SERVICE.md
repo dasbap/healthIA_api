@@ -46,8 +46,9 @@ Meal analysis works through a local image classifier downloaded during the Docke
 services/ai-service/app/models/meal_image_analyzer
 ```
 
-Override the model with `AI_SERVICE_VISION_MODEL_ID` at build time if needed. If the model or Python dependencies are missing, the service keeps using the fallback path and remains demo-safe.
-The Docker image installs the vision dependencies (`torch`, `transformers`, `Pillow`) and preloads the model; `/health` exposes `vision.enabled`, `vision.modelAvailable` and dependency status.
+Override the model with `AI_SERVICE_VISION_MODEL_ID` at build time if needed. Docker Compose forwards this value as a build argument.
+If the model or Python dependencies are missing, the service keeps using the fallback path and remains demo-safe.
+The Docker image installs CPU-only vision dependencies (`torch`, `transformers`, `Pillow`) and preloads the model before copying application code; `/health` exposes `vision.enabled`, `vision.modelAvailable` and dependency status.
 
 ## NoSQL collections
 
