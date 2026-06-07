@@ -8,6 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY pytest.ini .
 COPY scripts ./scripts
 COPY app ./app
+RUN python scripts/download_vision_model.py
 
 EXPOSE 8001
 

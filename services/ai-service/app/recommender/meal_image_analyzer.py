@@ -1,7 +1,17 @@
 from app.schemas.meal_analysis_schema import MealFoodItem
+from app.recommender.vision_model_analyzer import analyze_with_vision_model
 
 
 def analyze_meal_image(image_url: str, notes: str | None = None) -> dict:
+    model_foods = analyze_with_vision_model(image_url)
+    if model_foods:
+        return {
+            "detectedFoods": model_foods,
+            "totalCalories": sum(food["calories"] for food in model_foods),
+            "summary": "Analyse image realisee par modele local.",
+            "fallbackUsed": False,
+        }
+
     lowered = f"{image_url} {notes or ''}".lower()
     if "salad" in lowered or "legume" in lowered:
         foods = [
