@@ -15,6 +15,7 @@ The exported OpenAPI file is `services/api/openapi.json`.
 
 ```env
 API_PORT=3000
+API_HOST_PORT=13000
 MONGO_URI=mongodb://root:rootpassword@mongodb:27017/healthia?authSource=admin
 JWT_SECRET=development-secret
 JWT_EXPIRES_IN=15m

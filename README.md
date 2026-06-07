@@ -5,6 +5,13 @@ HealthIA API
 Les specifications operationnelles et contractuelles sont documentees dans
 [`SPECIFICATIONS.md`](SPECIFICATIONS.md).
 Les variables d'environnement d'exemple sont dans [`.env.example`](.env.example).
+Avant de lancer Docker Compose, creer le fichier local `.env` :
+
+```bash
+cp .env.example .env
+```
+
+Docker Compose lit ce fichier `.env` pour injecter les variables propres a chaque service.
 
 ## OpenAPI
 

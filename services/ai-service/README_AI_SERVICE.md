@@ -26,7 +26,9 @@ python scripts/export_openapi.py
 ## Environment
 
 ```env
-AI_SERVICE_MONGO_URI=mongodb://root:rootpassword@localhost:27017
+AI_SERVICE_ENVIRONMENT=docker
+AI_SERVICE_HOST_PORT=8001
+AI_SERVICE_MONGO_URI=mongodb://root:rootpassword@mongodb:27017
 AI_SERVICE_MONGO_DB=healthia
 AI_SERVICE_MONGO_TIMEOUT_MS=1200
 AI_SERVICE_MONGO_ENABLED=true
