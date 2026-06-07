@@ -7,6 +7,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.venv
 
 # Environment variables
 .env
@@ -26,3 +27,13 @@ Thumbs.db
 
 # MongoDB data
 mongodb_data/
+
+# AI Service - donnees et modeles
+ai-service/data/raw/
+ai-service/data/processed/
+ai-service/data/training/
+ai-service/data/models/
+ai-service/data/sample_images/
+ai-service/notebooks/.ipynb_checkpoints/
+ai-service/**/__pycache__/
+ai-service/.env
