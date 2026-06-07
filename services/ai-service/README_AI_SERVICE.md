@@ -38,6 +38,17 @@ AI_SERVICE_SERVICE_TOKEN=local-service-token
 If MongoDB is unavailable, the API still responds with deterministic fallback recommendations and marks storage as `memory_fallback`.
 When `AI_SERVICE_SERVICE_TOKEN` is set, every `/ai/*` route requires the same value in `X-Service-Token`.
 
+## Optional meal vision model
+
+Meal analysis works through a local image classifier downloaded during the Docker build. By default the build uses `nateraw/food` and stores it in:
+
+```text
+services/ai-service/app/models/meal_image_analyzer
+```
+
+Override the model with `AI_SERVICE_VISION_MODEL_ID` at build time if needed. If the model or Python dependencies are missing, the service keeps using the fallback path and remains demo-safe.
+The Docker image installs the vision dependencies (`torch`, `transformers`, `Pillow`) and preloads the model; `/health` exposes `vision.enabled`, `vision.modelAvailable` and dependency status.
+
 ## NoSQL collections
 
 `users`: managed by the main NestJS API.
