@@ -1,10 +1,8 @@
-# HealthAI Coach IA - Frontend
+# HealthAI Coach - Frontend
 
-Interface React demo pour la partie IA de la MSPR HealthAI Coach.
+Interface React de démonstration pour la partie IA, nutrition, sport et suivi utilisateur du projet MSPR HealthAI Coach.
 
-## Role
-
-Ce frontend presente les parcours attendus avant la disponibilite du backend NestJS, du microservice IA FastAPI, de MongoDB et des vrais modeles IA.
+Le frontend est volontairement connecté à des mocks par défaut afin de garantir une démonstration stable tant que le backend NestJS, le microservice FastAPI, MongoDB et les modèles IA ne sont pas complètement disponibles.
 
 ## Stack
 
@@ -13,10 +11,48 @@ Ce frontend presente les parcours attendus avant la disponibilite du backend Nes
 - React Router
 - TanStack Query
 - Recharts
-- Testing Library + Vitest
-- CSS applicatif responsive dans `src/styles/index.css`
+- Lucide React
+- Vitest + Testing Library
+- CSS responsive dans `src/styles/index.css`
 
-## Routes
+## Installation
+
+```bash
+cd apps/web
+npm ci
+```
+
+## Lancement
+
+```bash
+npm run dev
+```
+
+Build :
+
+```bash
+npm run build
+```
+
+Tests :
+
+```bash
+npm run test
+```
+
+## Variables d'environnement
+
+Créer un fichier `.env` dans `apps/web` si besoin :
+
+```bash
+VITE_API_BASE_URL=http://localhost:3000
+VITE_USE_MOCKS=true
+```
+
+- `VITE_API_BASE_URL` : URL du backend principal, `http://localhost:3000` par défaut.
+- `VITE_USE_MOCKS` : `true` par défaut. Si la valeur est `false`, le frontend tente l'API réelle puis retombe sur les mocks en cas d'erreur.
+
+## Routes principales
 
 - `/login`
 - `/dashboard`
@@ -27,52 +63,62 @@ Ce frontend presente les parcours attendus avant la disponibilite du backend Nes
 - `/recommendations/:id`
 - `/profile`
 
-## Mode donnees fictives
+## Endpoints IA attendus
 
-Les donnees sont mockees cote frontend dans `src/api`.
+- `GET /health`
+- `POST /ai/nutrition/recommend`
+- `POST /ai/sport/recommend`
+- `POST /ai/meal/analyze`
+- `GET /ai/recommendations/{user_id}`
+- `GET /ai/recommendations/detail/{recommendation_id}`
+- `POST /ai/recommendations/{recommendation_id}/feedback`
 
-Variables prevues:
+## Structure
 
-- `VITE_API_BASE_URL`, defaut `http://localhost:3000`
-- `VITE_USE_MOCKS`, defaut `true`
-
-Si `VITE_USE_MOCKS=true`, les modules API retournent directement les mocks. Si `VITE_USE_MOCKS=false`, le front tente les endpoints reels puis retombe proprement sur les mocks en cas d’erreur.
-
-## Lancer le front
-
-```bash
-cd apps/web
-npm install
-npm run dev
+```text
+src/
+  api/                 appels API et mocks
+  app/                 providers, query client, router
+  components/          layout, UI, états loading/error/empty
+  config/              env et routes
+  features/            pages par domaine métier
+  styles/              CSS global responsive
+  tests/               tests critiques
 ```
 
-Build:
+## Mode démo
 
-```bash
-npm run build
-```
+Un bandeau dans l'application indique clairement que les recommandations viennent des mocks frontend lorsque `VITE_USE_MOCKS=true`. Les mocks sont temporaires et ne doivent pas être présentés comme une vraie IA.
 
-Tests:
+Le profil est sauvegardé localement dans le navigateur en mode démo. Le feedback est également simulé.
 
-```bash
-npm run test
-```
+## Documentation frontend
 
-## Limites actuelles
+Les livrables membre 3 sont dans `../../docs/frontend` :
 
-- Pas d’authentification backend reelle.
-- Pas d’upload fichier vers serveur.
-- Pas de persistance MongoDB.
-- Pas d’appel IA reel.
-- Le feedback et le profil sont simules localement.
+- `benchmark_frontend.md`
+- `maquettes_responsive.md`
+- `choix_technologiques_front.md`
+- `accessibilite_rgAA_wcag.md`
+- `parcours_utilisateur.md`
+- `front_tests_report.md`
+- `soutenance_frontend.md`
 
-## Branchement futur API
+## Éléments à montrer en soutenance
 
-Remplacer progressivement les chemins dans:
+- Dashboard avec KPI, graphiques et état API/mock.
+- Recommandation nutrition avec validation, score et contraintes.
+- Recommandation sport avec limitation physique et précaution.
+- Analyse repas avec aperçu, loading et résultats.
+- Historique filtrable et détail explicable.
+- Feedback et profil sauvegardé localement.
+- Tests passants : `npm run test`.
+- Build passants : `npm run build`.
 
-- `src/api/authApi.ts`
-- `src/api/usersApi.ts`
-- `src/api/aiApi.ts`
-- `src/api/recommendationsApi.ts`
+## Limites connues
 
-Les types exportes representent les contrats attendus pour connecter NestJS et le microservice IA plus tard.
+- Authentification backend non branchée.
+- Recommandations IA mockées par défaut.
+- Pas de persistance MongoDB côté frontend.
+- Pas de test end-to-end navigateur.
+- `npm audit` signale des vulnérabilités à analyser avant production, dont 2 modérées sur les dépendances de production React Router.

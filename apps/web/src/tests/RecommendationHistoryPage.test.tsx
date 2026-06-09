@@ -11,7 +11,7 @@ function renderWithProviders() {
 
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
         <RecommendationHistoryPage />
       </MemoryRouter>
     </QueryClientProvider>
@@ -22,12 +22,12 @@ describe('RecommendationHistoryPage', () => {
   it('affiche l’historique et filtre les recommandations sportives', async () => {
     renderWithProviders();
 
-    expect(await screen.findByText(/Repas equilibre pour perte de poids/i)).toBeInTheDocument();
-    expect(screen.getByText(/Programme cardio debutant/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Repas équilibré pour perte de poids/i)).toBeInTheDocument();
+    expect(screen.getByText(/Programme cardio débutant/i)).toBeInTheDocument();
 
     await userEvent.selectOptions(screen.getByLabelText(/Type/i), 'sport');
 
-    expect(screen.getByText(/Programme cardio debutant/i)).toBeInTheDocument();
-    expect(screen.queryByText(/Petit-dejeuner proteine/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Programme cardio débutant/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Petit-déjeuner protéiné/i)).not.toBeInTheDocument();
   });
 });

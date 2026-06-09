@@ -86,7 +86,7 @@ export type SportRecommendation = {
 export async function analyzeMeal(request: MealAnalysisRequest): Promise<MealAnalysisResponse> {
   return withApiFallback(
     () =>
-      httpClient<MealAnalysisResponse>('/ai/meal-analysis', {
+      httpClient<MealAnalysisResponse>('/ai/meal/analyze', {
         method: 'POST',
         body: JSON.stringify(request),
         fallbackLabel: 'Analyse repas indisponible'
@@ -97,8 +97,8 @@ export async function analyzeMeal(request: MealAnalysisRequest): Promise<MealAna
         analysisId: 'analysis_001',
         detectedFoods: [
           { label: 'Riz complet', confidence: 0.88 },
-          { label: 'Poulet grille', confidence: 0.76 },
-          { label: 'Legumes verts', confidence: 0.69 },
+          { label: 'Poulet grillé', confidence: 0.76 },
+          { label: 'Légumes verts', confidence: 0.69 },
           { label: 'Sauce yaourt', confidence: 0.62 }
         ],
         nutrition: {
@@ -107,11 +107,11 @@ export async function analyzeMeal(request: MealAnalysisRequest): Promise<MealAna
           carbs: 78,
           fat: 14
         },
-        imbalances: ['Glucides eleves', 'Apport en proteines correct', 'Fibres legerement basses'],
+        imbalances: ['Glucides élevés', 'Apport en protéines correct', 'Fibres légèrement basses'],
         suggestions: [
-          'Ajouter une portion de legumes verts supplementaire',
-          'Reduire legerement la portion de riz',
-          'Conserver la source de proteines maigres'
+          'Ajouter une portion de légumes verts supplémentaire',
+          'Réduire légèrement la portion de riz',
+          'Conserver la source de protéines maigres'
         ],
         model: 'healthai-vision-demo',
         createdAt: new Date().toISOString()
@@ -125,7 +125,7 @@ export async function generateNutritionRecommendation(
 ): Promise<NutritionRecommendation> {
   return withApiFallback(
     () =>
-      httpClient<NutritionRecommendation>('/ai/recommendations/nutrition', {
+      httpClient<NutritionRecommendation>('/ai/nutrition/recommend', {
         method: 'POST',
         body: JSON.stringify(request),
         fallbackLabel: 'Recommandation nutrition indisponible'
@@ -135,9 +135,9 @@ export async function generateNutritionRecommendation(
       return {
         recommendationId: 'rec_001',
         type: 'nutrition',
-        title: 'Repas equilibre pour perte de poids',
+        title: 'Repas équilibré pour perte de poids',
         score: 0.87,
-        mealPlan: ['Poulet grille', 'Riz complet', 'Legumes verts', 'Yaourt nature', 'Fruit frais'],
+        mealPlan: ['Poulet grillé', 'Riz complet', 'Légumes verts', 'Yaourt nature', 'Fruit frais'],
         macros: {
           calories: request.targetCalories || 540,
           protein: 43,
@@ -152,9 +152,9 @@ export async function generateNutritionRecommendation(
         explanation:
           'Ce plan respecte l’objectif calorique, augmente l’apport en proteines et garde une densite nutritionnelle elevee avec un budget maitrise.',
         advice: [
-          'Preparer les feculents en avance pour stabiliser les portions',
-          'Ajouter des crudites si la faim persiste',
-          'Boire un verre d’eau avant le repas pour mieux evaluer la satiete'
+          'Préparer les féculents en avance pour stabiliser les portions',
+          'Ajouter des crudités si la faim persiste',
+          'Boire un verre d’eau avant le repas pour mieux évaluer la satiété'
         ],
         model: 'healthai-nutrition-demo-v0.3'
       };
@@ -167,7 +167,7 @@ export async function generateSportRecommendation(
 ): Promise<SportRecommendation> {
   return withApiFallback(
     () =>
-      httpClient<SportRecommendation>('/ai/recommendations/sport', {
+      httpClient<SportRecommendation>('/ai/sport/recommend', {
         method: 'POST',
         body: JSON.stringify(request),
         fallbackLabel: 'Recommandation sportive indisponible'
@@ -178,20 +178,20 @@ export async function generateSportRecommendation(
       return {
         recommendationId: 'rec_002',
         type: 'sport',
-        title: 'Programme cardio debutant sans materiel',
+        title: 'Programme cardio débutant sans matériel',
         score: 0.84,
         duration: request.duration || 30,
         intensity: request.fatigue === 'elevee' ? 'low' : 'medium',
         exercises: [
           { name: 'Marche rapide', duration: 15, intensity: 'low', note: 'Rythme respiratoire confortable' },
-          { name: 'Gainage adapte', duration: 5, intensity: 'medium', note: 'Series courtes, dos neutre' },
-          { name: 'Squat adapte', duration: 8, intensity: 'medium', note: 'Amplitude reduite si douleur' },
+          { name: 'Gainage adapté', duration: 5, intensity: 'medium', note: 'Séries courtes, dos neutre' },
+          { name: 'Squat adapté', duration: 8, intensity: 'medium', note: 'Amplitude réduite si douleur' },
           { name: 'Retour au calme', duration: 2, intensity: 'low', note: 'Respiration lente et mobilite' }
         ],
         explanation:
-          'Programme adapte a un objectif de perte de graisse, sans materiel et avec une intensite moderee pour favoriser la regularite.',
+          'Programme adapté à un objectif de perte de graisse, sans matériel et avec une intensité modérée pour favoriser la régularité.',
         warning: hasLimitation
-          ? 'Limitation declaree prise en compte: eviter toute douleur vive et reduire l’amplitude des mouvements.'
+          ? 'Limitation déclarée prise en compte : éviter toute douleur vive et réduire l’amplitude des mouvements.'
           : undefined,
         model: 'healthai-sport-demo-v0.2'
       };

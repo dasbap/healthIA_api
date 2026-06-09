@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { Activity, BrainCircuit, Dumbbell, Salad } from 'lucide-react';
+import { Activity, BrainCircuit, Salad, Server } from 'lucide-react';
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { checkApiHealth } from '../../api/httpClient';
 import { getRecommendationHistory } from '../../api/recommendationsApi';
 import { Alert } from '../../components/ui/Alert';
 import { Card, CardHeader } from '../../components/ui/Card';
@@ -26,6 +27,7 @@ const repartitionData = [
 
 export function DashboardPage() {
   const { data = [], isLoading } = useQuery({ queryKey: ['recommendations'], queryFn: getRecommendationHistory });
+  const { data: apiHealth } = useQuery({ queryKey: ['api-health'], queryFn: checkApiHealth });
   const averageScore = data.length ? Math.round((data.reduce((sum, item) => sum + item.score, 0) / data.length) * 100) : 0;
   const mealAnalyses = data.filter((item) => item.type === 'meal-analysis').length;
 
@@ -38,23 +40,28 @@ export function DashboardPage() {
       <section className="page-heading">
         <div>
           <p className="eyebrow">Dashboard IA</p>
-          <h2>Vue globale des recommandations HealthAI</h2>
-          <p>Indicateurs demo pour suivre la qualite percue, les analyses et les recommandations personnalisees.</p>
+          <h1>Vue globale des recommandations HealthAI</h1>
+          <p>Indicateurs démo pour suivre la qualité perçue, les analyses et les recommandations personnalisées.</p>
         </div>
       </section>
 
       <div className="kpi-grid">
         <KpiCard title="Recommandations" value={String(data.length)} trend="+18% cette semaine" icon={<BrainCircuit size={22} />} />
-        <KpiCard title="Score moyen" value={`${averageScore}%`} trend="Qualite stable" icon={<Activity size={22} />} />
+        <KpiCard title="Score moyen" value={`${averageScore}%`} trend="Qualité stable" icon={<Activity size={22} />} />
         <KpiCard title="Analyses repas" value={String(mealAnalyses)} trend="Photos et URLs" icon={<Salad size={22} />} />
-        <KpiCard title="Plans sportifs" value={String(data.filter((item) => item.type === 'sport').length)} trend="Bas impact priorise" icon={<Dumbbell size={22} />} />
+        <KpiCard
+          title="API IA"
+          value={apiHealth?.mocked ? 'Mock' : 'Live'}
+          trend={apiHealth?.status ?? 'Healthcheck'}
+          icon={<Server size={22} />}
+        />
       </div>
 
       <div className="dashboard-grid">
         <Card>
           <CardHeader>
             <div>
-              <h2>Evolution du score</h2>
+              <h2>Évolution du score</h2>
               <p>Score moyen fictif des recommandations sur 7 jours.</p>
             </div>
           </CardHeader>
@@ -65,7 +72,7 @@ export function DashboardPage() {
                 <XAxis dataKey="day" />
                 <YAxis domain={[60, 100]} />
                 <Tooltip />
-                <Area type="monotone" dataKey="score" stroke="#15a082" fill="#b8f3df" />
+                <Area type="monotone" dataKey="score" stroke="#15a082" fill="#b8f3df" isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -74,14 +81,14 @@ export function DashboardPage() {
         <Card>
           <CardHeader>
             <div>
-              <h2>Repartition IA</h2>
+              <h2>Répartition IA</h2>
               <p>Nutrition, sport et analyse de repas.</p>
             </div>
           </CardHeader>
           <div className="chart-box">
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
-                <Pie data={repartitionData} dataKey="value" nameKey="name" innerRadius={62} outerRadius={90} paddingAngle={4}>
+                <Pie data={repartitionData} dataKey="value" nameKey="name" innerRadius={62} outerRadius={90} paddingAngle={4} isAnimationActive={false}>
                   {repartitionData.map((entry) => (
                     <Cell key={entry.name} fill={entry.color} />
                   ))}
@@ -99,12 +106,12 @@ export function DashboardPage() {
           <CardHeader>
             <div>
               <h2>Alertes nutritionnelles</h2>
-              <p>Signaux fictifs detectes sur les derniers repas.</p>
+              <p>Signaux fictifs détectés sur les derniers repas.</p>
             </div>
           </CardHeader>
           <div className="list-stack">
-            <Alert tone="warning" title="Glucides eleves">Deux analyses recentes indiquent une portion de feculents superieure a l’objectif.</Alert>
-            <Alert tone="success" title="Proteines correctes">Les apports proteiques restent coherents avec l’objectif principal.</Alert>
+            <Alert tone="warning" title="Glucides élevés">Deux analyses récentes indiquent une portion de féculents supérieure à l’objectif.</Alert>
+            <Alert tone="success" title="Protéines correctes">Les apports protéiques restent cohérents avec l’objectif principal.</Alert>
           </div>
         </Card>
       </div>
@@ -123,7 +130,7 @@ export function DashboardPage() {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="value" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="value" fill="#3b82f6" radius={[6, 6, 0, 0]} isAnimationActive={false} />
             </BarChart>
           </ResponsiveContainer>
         </div>

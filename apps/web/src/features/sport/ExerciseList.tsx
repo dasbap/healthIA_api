@@ -9,13 +9,19 @@ const toneByIntensity = {
   high: 'danger'
 } as const;
 
+const labelsByIntensity = {
+  low: 'Faible',
+  medium: 'Modérée',
+  high: 'Élevée'
+};
+
 export function ExerciseList({ exercises }: { exercises: Exercise[] }) {
   return (
     <Card>
       <CardHeader>
         <div>
-          <h2>Exercices proposes</h2>
-          <p>Duree par exercice et intensite prevue.</p>
+          <h2>Exercices proposés</h2>
+          <p>Durée par exercice et intensité prévue.</p>
         </div>
       </CardHeader>
       <div className="list-stack">
@@ -26,18 +32,18 @@ export function ExerciseList({ exercises }: { exercises: Exercise[] }) {
               <p>{exercise.note}</p>
             </div>
             <span>{exercise.duration} min</span>
-            <Badge tone={toneByIntensity[exercise.intensity]}>{exercise.intensity}</Badge>
+            <Badge tone={toneByIntensity[exercise.intensity]}>Intensité {labelsByIntensity[exercise.intensity]}</Badge>
           </div>
         ))}
       </div>
-      <div className="chart-box small">
+      <div className="chart-box small" aria-label="Graphique des durées par exercice">
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={exercises}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
             <XAxis dataKey="name" tick={{ fontSize: 11 }} />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="duration" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="duration" fill="#3b82f6" radius={[6, 6, 0, 0]} isAnimationActive={false} />
           </BarChart>
         </ResponsiveContainer>
       </div>

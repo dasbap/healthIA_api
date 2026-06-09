@@ -11,13 +11,13 @@ export function ImbalancePanel({ imbalances, suggestions = [] }: ImbalancePanelP
     <Card>
       <CardHeader>
         <div>
-          <h2>Desequilibres et pistes</h2>
-          <p>Lecture IA des signaux nutritionnels principaux.</p>
+          <h2>Déséquilibres et pistes</h2>
+          <p>Lecture démo des signaux nutritionnels principaux.</p>
         </div>
       </CardHeader>
       <div className="two-column-list">
         <div>
-          <h3><AlertTriangle size={17} /> Points detectes</h3>
+          <h3><AlertTriangle size={17} aria-hidden="true" /> Points détectés</h3>
           <ul className="check-list warning-list">
             {imbalances.map((item) => (
               <li key={item}>{item}</li>
@@ -25,7 +25,7 @@ export function ImbalancePanel({ imbalances, suggestions = [] }: ImbalancePanelP
           </ul>
         </div>
         <div>
-          <h3><Lightbulb size={17} /> Suggestions</h3>
+          <h3><Lightbulb size={17} aria-hidden="true" /> Suggestions</h3>
           <ul className="check-list">
             {suggestions.map((item) => (
               <li key={item}>{item}</li>

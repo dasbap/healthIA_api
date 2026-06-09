@@ -32,7 +32,7 @@ export function LoginPage() {
     <main className="login-page">
       <Card className="login-card">
         <p className="eyebrow">HealthAI Coach IA</p>
-        <h1>Connexion demo</h1>
+        <h1>Connexion démo</h1>
         <p className="muted">
           Utilisez le compte fictif fourni pour presenter l’interface sans backend.
         </p>

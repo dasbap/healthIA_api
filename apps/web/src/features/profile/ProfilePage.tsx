@@ -17,17 +17,17 @@ export function ProfilePage() {
       <section className="page-heading">
         <div>
           <p className="eyebrow">Profil</p>
-          <h2>{profile.name}</h2>
-          <p>Preferences nutritionnelles et sportives utilisees pour personnaliser les futures recommandations.</p>
+          <h1>{profile.name}</h1>
+          <p>Préférences nutritionnelles et sportives utilisées pour personnaliser les futures recommandations.</p>
         </div>
       </section>
       <Card>
         <CardHeader>
           <div>
-            <h2>Synthese</h2>
+            <h2>Synthèse</h2>
             <p>{profile.email}</p>
           </div>
-          <Badge tone="info">Utilisateur demo</Badge>
+          <Badge tone="info">Utilisateur démo</Badge>
         </CardHeader>
         <div className="metric-row">
           <span><strong>{profile.age}</strong>ans</span>

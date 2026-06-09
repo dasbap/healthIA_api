@@ -1,26 +1,26 @@
-import type { InputHTMLAttributes } from 'react';
+import type { TextareaHTMLAttributes } from 'react';
 
-type InputProps = InputHTMLAttributes<HTMLInputElement> & {
+type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   label: string;
   hint?: string;
   error?: string;
 };
 
-export function Input({ label, hint, error, id, className = '', ...props }: InputProps) {
-  const inputId = id ?? props.name ?? label.toLowerCase().replace(/\s+/g, '-');
-  const hintId = hint ? `${inputId}-hint` : undefined;
-  const errorId = error ? `${inputId}-error` : undefined;
+export function Textarea({ label, hint, error, id, className = '', ...props }: TextareaProps) {
+  const textareaId = id ?? props.name ?? label.toLowerCase().replace(/\s+/g, '-');
+  const hintId = hint ? `${textareaId}-hint` : undefined;
+  const errorId = error ? `${textareaId}-error` : undefined;
   const describedBy = [hintId, errorId].filter(Boolean).join(' ') || undefined;
 
   return (
-    <label className={`field ${className}`} htmlFor={inputId}>
+    <label className={`field ${className}`} htmlFor={textareaId}>
       <span className="field-label">
         {label}
         {props.required ? <span className="required-mark" aria-hidden="true"> *</span> : null}
       </span>
-      <input
-        id={inputId}
-        className="input"
+      <textarea
+        id={textareaId}
+        className="input textarea"
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy}
         aria-required={props.required ? true : undefined}

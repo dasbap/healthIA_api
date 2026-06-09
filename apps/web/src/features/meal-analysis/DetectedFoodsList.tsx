@@ -7,15 +7,17 @@ export function DetectedFoodsList({ foods }: { foods: DetectedFood[] }) {
     <Card>
       <CardHeader>
         <div>
-          <h2>Aliments detectes</h2>
-          <p>Confiance estimee par le modele vision demo.</p>
+          <h2>Aliments détectés</h2>
+          <p>Confiance estimée par le modèle vision démo.</p>
         </div>
       </CardHeader>
       <div className="list-stack">
         {foods.map((food) => (
           <div className="food-row" key={food.label}>
             <span>{food.label}</span>
-            <Badge tone={food.confidence > 0.75 ? 'success' : 'warning'}>{Math.round(food.confidence * 100)}%</Badge>
+            <Badge tone={food.confidence > 0.75 ? 'success' : 'warning'}>
+              Confiance {Math.round(food.confidence * 100)}%
+            </Badge>
           </div>
         ))}
       </div>

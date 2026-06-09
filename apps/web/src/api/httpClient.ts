@@ -27,6 +27,10 @@ export async function httpClient<T>(path: string, options: RequestOptions = {}):
     throw new ApiError(options.fallbackLabel ?? 'Erreur API HealthAI', response.status);
   }
 
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
   return response.json() as Promise<T>;
 }
 
@@ -51,4 +55,14 @@ export async function withApiFallback<T>(
 
 export function mockDelay(ms = 450) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+export async function checkApiHealth(): Promise<{ status: string; mocked: boolean }> {
+  return withApiFallback(
+    () => httpClient<{ status: string; mocked?: boolean }>('/health', { fallbackLabel: 'Healthcheck indisponible' }),
+    async () => {
+      await mockDelay(150);
+      return { status: 'mocked', mocked: true };
+    }
+  ).then((health) => ({ status: health.status, mocked: Boolean(health.mocked) || shouldUseMocks() }));
 }

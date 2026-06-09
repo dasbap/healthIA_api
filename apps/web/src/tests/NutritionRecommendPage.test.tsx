@@ -9,10 +9,20 @@ describe('NutritionRecommendPage', () => {
     expect(screen.getByLabelText(/Objectif/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Calories cibles/i)).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole('button', { name: /Generer la recommandation/i }));
+    await userEvent.click(screen.getByRole('button', { name: /Générer la recommandation/i }));
 
-    expect(await screen.findByText(/Repas equilibre pour perte de poids/i)).toBeInTheDocument();
-    expect(screen.getByText(/Poulet grille/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Repas équilibré pour perte de poids/i)).toBeInTheDocument();
+    expect(screen.getByText(/Poulet grillé/i)).toBeInTheDocument();
     expect(screen.getAllByText(/Budget/i).length).toBeGreaterThan(0);
+  });
+
+  it('affiche une erreur si les calories cibles sont invalides', async () => {
+    render(<NutritionRecommendPage />);
+
+    await userEvent.clear(screen.getByLabelText(/Calories cibles/i));
+    await userEvent.type(screen.getByLabelText(/Calories cibles/i), '20');
+    await userEvent.click(screen.getByRole('button', { name: /Générer la recommandation/i }));
+
+    expect(screen.getByText(/valeur entre 300 et 2000 kcal/i)).toBeInTheDocument();
   });
 });

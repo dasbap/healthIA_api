@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { analyzeMeal, type MealAnalysisResponse } from '../../api/aiApi';
+import { analyzeMeal, type MealAnalysisRequest, type MealAnalysisResponse } from '../../api/aiApi';
 import { Alert } from '../../components/ui/Alert';
 import { LoadingState } from '../../components/states/LoadingState';
 import { DetectedFoodsList } from './DetectedFoodsList';
@@ -12,7 +12,7 @@ export function MealAnalysisPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  async function handleAnalysis(payload: { imageUrl?: string; fileName?: string }) {
+  async function handleAnalysis(payload: MealAnalysisRequest) {
     setIsLoading(true);
     setError('');
     try {
@@ -30,13 +30,13 @@ export function MealAnalysisPage() {
       <section className="page-heading">
         <div>
           <p className="eyebrow">Analyse repas</p>
-          <h2>Detection d’aliments et estimation nutritionnelle</h2>
-          <p>Simulation complete de la future analyse photo/URL avec resultats IA fictifs.</p>
+          <h1>Détection d’aliments et estimation nutritionnelle</h1>
+          <p>Simulation complète de la future analyse photo/URL avec résultats clairement identifiés comme démo.</p>
         </div>
       </section>
       {error ? <Alert tone="danger" title="Analyse indisponible">{error}</Alert> : null}
       <MealUploadForm onSubmit={handleAnalysis} isLoading={isLoading} />
-      {isLoading ? <LoadingState label="Le modele vision demo analyse l’image..." /> : null}
+      {isLoading ? <LoadingState label="Le modèle vision démo analyse l’image..." /> : null}
       {result ? (
         <div className="dashboard-grid">
           <DetectedFoodsList foods={result.detectedFoods} />

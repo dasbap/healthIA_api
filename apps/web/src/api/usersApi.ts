@@ -32,12 +32,29 @@ export const mockProfile: UserProfile = {
   sportPreferences: ['Marche rapide', 'Renforcement bas impact', 'Mobilite']
 };
 
+const profileStorageKey = 'healthai_profile';
+
+function getStoredProfile() {
+  const stored = localStorage.getItem(profileStorageKey);
+
+  if (!stored) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(stored) as UserProfile;
+  } catch {
+    localStorage.removeItem(profileStorageKey);
+    return null;
+  }
+}
+
 export async function getUserProfile(): Promise<UserProfile> {
   return withApiFallback(
     () => httpClient<UserProfile>('/users/me', { fallbackLabel: 'Profil indisponible' }),
     async () => {
       await mockDelay(300);
-      return mockProfile;
+      return getStoredProfile() ?? mockProfile;
     }
   );
 }
@@ -52,6 +69,7 @@ export async function updateUserProfile(profile: UserProfile): Promise<UserProfi
       }),
     async () => {
       await mockDelay(350);
+      localStorage.setItem(profileStorageKey, JSON.stringify(profile));
       return profile;
     }
   );

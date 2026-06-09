@@ -17,7 +17,7 @@ export function NutritionRecommendPage() {
     try {
       setRecommendation(await generateNutritionRecommendation(payload));
     } catch {
-      setError('La generation nutritionnelle demo a echoue.');
+      setError('La génération nutritionnelle démo a échoué.');
     } finally {
       setIsLoading(false);
     }
@@ -28,18 +28,18 @@ export function NutritionRecommendPage() {
       <section className="page-heading">
         <div>
           <p className="eyebrow">Nutrition IA</p>
-          <h2>Recommandation nutritionnelle personnalisee</h2>
-          <p>Formulaire multi-criteres et resultat IA fictif prepare pour les futurs endpoints.</p>
+          <h1>Plan nutrition personnalisé</h1>
+          <p>Formulaire ciblé et résultat démo préparé pour le futur endpoint `/ai/nutrition/recommend`.</p>
         </div>
       </section>
-      {error ? <Alert tone="danger" title="Generation impossible">{error}</Alert> : null}
+      {error ? <Alert tone="danger" title="Génération impossible">{error}</Alert> : null}
       <NutritionForm onSubmit={handleSubmit} isLoading={isLoading} />
-      {isLoading ? <LoadingState label="Le moteur nutrition demo compose le plan..." /> : null}
+      {isLoading ? <LoadingState label="Le moteur nutrition démo compose le plan..." /> : null}
       {recommendation ? (
         <>
           <MealPlanResult recommendation={recommendation} />
           <ImbalancePanel
-            imbalances={['Objectif calorique controle', 'Proteines prioritaires', 'Budget surveille']}
+            imbalances={['Objectif calorique contrôlé', 'Protéines prioritaires', 'Budget surveillé']}
             suggestions={recommendation.advice}
           />
         </>

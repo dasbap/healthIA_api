@@ -33,8 +33,8 @@ export function RecommendationHistoryPage() {
       <section className="page-heading">
         <div>
           <p className="eyebrow">Historique</p>
-          <h2>Recommandations et analyses IA</h2>
-          <p>Liste fictive filtrable pour presenter le suivi utilisateur.</p>
+          <h1>Recommandations et analyses IA</h1>
+          <p>Liste démo filtrable pour présenter le suivi utilisateur.</p>
         </div>
       </section>
       <Card>
@@ -59,12 +59,12 @@ export function RecommendationHistoryPage() {
       <Card>
         <CardHeader>
           <div>
-            <h2>Resultats</h2>
-            <p>{filtered.length} element(s) affiches.</p>
+            <h2>Résultats</h2>
+            <p>{filtered.length} élément(s) affiché(s).</p>
           </div>
         </CardHeader>
         {filtered.length === 0 ? (
-          <EmptyState title="Aucun resultat" message="Aucune recommandation demo ne correspond a ce filtre." />
+          <EmptyState title="Aucun résultat" message="Aucune recommandation démo ne correspond à ce filtre." />
         ) : (
           <div className="history-list">
             {filtered.map((item) => (
@@ -80,7 +80,7 @@ export function RecommendationHistoryPage() {
                   <span>{new Intl.DateTimeFormat('fr-FR').format(new Date(item.createdAt))}</span>
                   <span>{Math.round(item.score * 100)}%</span>
                   <Badge tone={item.status === 'flagged' ? 'warning' : 'neutral'}>{item.status}</Badge>
-                  <Link className="link-button" to={routes.recommendationDetail(item.id)}>Voir detail</Link>
+                  <Link className="link-button" to={routes.recommendationDetail(item.id)}>Voir le détail</Link>
                 </div>
               </article>
             ))}

@@ -16,7 +16,7 @@ export function SportRecommendPage() {
     try {
       setRecommendation(await generateSportRecommendation(payload));
     } catch {
-      setError('La generation sportive demo a echoue.');
+      setError('La génération sportive démo a échoué.');
     } finally {
       setIsLoading(false);
     }
@@ -27,13 +27,13 @@ export function SportRecommendPage() {
       <section className="page-heading">
         <div>
           <p className="eyebrow">Sport IA</p>
-          <h2>Recommandation sportive multi-criteres</h2>
-          <p>Programme fictif adapte a l’objectif, au niveau, au temps disponible et aux limitations.</p>
+          <h1>Programme sportif</h1>
+          <p>Programme démo adapté au niveau et aux limitations.</p>
         </div>
       </section>
-      {error ? <Alert tone="danger" title="Generation impossible">{error}</Alert> : null}
+      {error ? <Alert tone="danger" title="Génération impossible">{error}</Alert> : null}
       <SportForm onSubmit={handleSubmit} isLoading={isLoading} />
-      {isLoading ? <LoadingState label="Le moteur sport demo construit la seance..." /> : null}
+      {isLoading ? <LoadingState label="Le moteur sport démo construit la séance..." /> : null}
       {recommendation ? <WorkoutResult recommendation={recommendation} /> : null}
     </div>
   );

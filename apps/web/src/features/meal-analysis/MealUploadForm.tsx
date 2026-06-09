@@ -1,5 +1,6 @@
-import { FormEvent, type ChangeEvent, useState } from 'react';
+import { FormEvent, type ChangeEvent, useEffect, useState } from 'react';
 import { UploadCloud } from 'lucide-react';
+import { Alert } from '../../components/ui/Alert';
 import { Button } from '../../components/ui/Button';
 import { Card, CardHeader } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
@@ -13,6 +14,15 @@ export function MealUploadForm({ onSubmit, isLoading }: MealUploadFormProps) {
   const [imageUrl, setImageUrl] = useState('https://images.unsplash.com/photo-1546069901-ba9599a7e63c');
   const [fileName, setFileName] = useState('');
   const [previewUrl, setPreviewUrl] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -21,10 +31,16 @@ export function MealUploadForm({ onSubmit, isLoading }: MealUploadFormProps) {
     }
     setFileName(file.name);
     setPreviewUrl(URL.createObjectURL(file));
+    setError('');
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!imageUrl.trim() && !fileName) {
+      setError('Ajoutez une URL d’image ou sélectionnez un fichier repas.');
+      return;
+    }
+    setError('');
     onSubmit({ imageUrl, fileName, previewUrl });
   }
 
@@ -33,18 +49,28 @@ export function MealUploadForm({ onSubmit, isLoading }: MealUploadFormProps) {
       <CardHeader>
         <div>
           <h2>Source du repas</h2>
-          <p>URL d’image ou fichier local pour simuler l’analyse vision.</p>
+          <p>URL d’image ou fichier local pour simuler l’analyse vision. Aucun fichier n’est envoyé au serveur en mode démo.</p>
         </div>
       </CardHeader>
-      <form className="form-grid" onSubmit={handleSubmit}>
-        <Input label="URL d’image" type="url" value={imageUrl} onChange={(event) => setImageUrl(event.target.value)} />
+      <form className="form-grid" onSubmit={handleSubmit} noValidate>
+        {error ? <Alert tone="warning" title="Source manquante">{error}</Alert> : null}
+        <Input
+          label="URL d’image"
+          type="url"
+          value={imageUrl}
+          onChange={(event) => {
+            setImageUrl(event.target.value);
+            setError('');
+          }}
+          hint="Exemple accepté : URL publique d’une photo de repas."
+        />
         <label className="file-drop" htmlFor="meal-file">
           <UploadCloud aria-hidden="true" />
           <span>{fileName || 'Choisir une photo de repas'}</span>
           <input id="meal-file" type="file" accept="image/*" onChange={handleFileChange} />
         </label>
         {previewUrl || imageUrl ? (
-          <img className="meal-preview" src={previewUrl || imageUrl} alt="Apercu du repas a analyser" />
+          <img className="meal-preview" src={previewUrl || imageUrl} alt={fileName ? `Aperçu du repas ${fileName}` : 'Aperçu du repas à analyser'} />
         ) : null}
         <Button type="submit" disabled={isLoading}>
           {isLoading ? 'Analyse en cours...' : 'Analyser le repas'}

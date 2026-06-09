@@ -1,4 +1,4 @@
-import { Menu, Search } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { getCurrentUser } from '../../api/authApi';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
@@ -15,16 +15,12 @@ export function Topbar({ onMenuClick }: TopbarProps) {
       <Button variant="ghost" className="mobile-menu-button" onClick={onMenuClick} aria-label="Ouvrir le menu">
         <Menu size={20} />
       </Button>
-      <div>
+      <div className="topbar-title">
         <p className="eyebrow">HealthAI Coach IA</p>
-        <h1>Interface IA nutrition et sport</h1>
+        <p>Interface nutrition, sport et suivi utilisateur</p>
       </div>
-      <label className="topbar-search" htmlFor="global-search">
-        <Search size={17} aria-hidden="true" />
-        <input id="global-search" type="search" placeholder="Rechercher une recommandation" />
-      </label>
-      <Badge tone="info">Mode demo</Badge>
-      <div className="user-chip" aria-label={`Utilisateur connecte ${user.name}`}>
+      <Badge tone="info">Mode démo</Badge>
+      <div className="user-chip" aria-label={`Utilisateur connecté ${user.name}`}>
         <span>{user.name}</span>
         <strong>{user.name.slice(0, 2).toUpperCase()}</strong>
       </div>

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { getRecommendationDetail } from '../../api/recommendationsApi';
+import { ErrorState } from '../../components/states/ErrorState';
 import { LoadingState } from '../../components/states/LoadingState';
 import { Badge } from '../../components/ui/Badge';
 import { Card, CardHeader } from '../../components/ui/Card';
@@ -9,32 +10,36 @@ import { FeedbackForm } from './FeedbackForm';
 
 export function RecommendationDetailPage() {
   const { id = 'rec_001' } = useParams();
-  const { data, isLoading } = useQuery({
+  const { data, isError, isLoading } = useQuery({
     queryKey: ['recommendation-detail', id],
     queryFn: () => getRecommendationDetail(id)
   });
 
+  if (isError) {
+    return <ErrorState title="Recommandation introuvable" message="Aucun détail ne correspond à cet identifiant en mode démo." />;
+  }
+
   if (isLoading || !data) {
-    return <LoadingState label="Chargement du detail IA..." />;
+    return <LoadingState label="Chargement du détail IA..." />;
   }
 
   return (
     <div className="page-stack">
       <section className="page-heading">
         <div>
-          <p className="eyebrow">Detail recommandation</p>
-          <h2>{data.title}</h2>
-          <p>Trace explicable de l’entrée utilisateur, du resultat IA et du modele fictif.</p>
+          <p className="eyebrow">Détail recommandation</p>
+          <h1>{data.title}</h1>
+          <p>Trace explicable de l’entrée utilisateur, du résultat IA et du modèle fictif.</p>
         </div>
         <Link className="text-link" to={routes.recommendations}>
-          Retour historique
+          Retour à l’historique
         </Link>
       </section>
 
       <Card>
         <CardHeader>
           <div>
-            <h2>Resultat IA</h2>
+            <h2>Résultat IA</h2>
             <p>{data.summary}</p>
           </div>
           <Badge tone="info">{Math.round(data.score * 100)}%</Badge>
@@ -53,7 +58,7 @@ export function RecommendationDetailPage() {
             <p>{data.explanation}</p>
           </div>
           <div>
-            <h3>Modele</h3>
+            <h3>Modèle</h3>
             <p>{data.model} v{data.modelVersion}</p>
             <p>{new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(data.createdAt))}</p>
           </div>
@@ -69,7 +74,7 @@ export function RecommendationDetailPage() {
         <CardHeader>
           <div>
             <h2>Feedback utilisateur</h2>
-            <p>Evaluation locale pour simuler l’amelioration continue.</p>
+            <p>Évaluation locale pour simuler l’amélioration continue.</p>
           </div>
         </CardHeader>
         <FeedbackForm recommendationId={data.id} />
