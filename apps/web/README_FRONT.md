@@ -45,12 +45,13 @@ npm run test
 Créer un fichier `.env` dans `apps/web` si besoin :
 
 ```bash
-VITE_API_BASE_URL=http://localhost:3000
+VITE_AI_API_URL=http://localhost:8000
 VITE_USE_MOCKS=true
 VITE_GRAFANA_URL=http://localhost:3002
 ```
 
-- `VITE_API_BASE_URL` : URL du backend principal, `http://localhost:3000` par défaut.
+- `VITE_AI_API_URL` : URL de l'API IA FastAPI, `http://localhost:8000` par defaut.
+- `VITE_API_BASE_URL` : compatibilite avec l'ancien nom de variable.
 - `VITE_USE_MOCKS` : `true` par défaut. Si la valeur est `false`, le frontend tente l'API réelle puis retombe sur les mocks en cas d'erreur.
 - `VITE_GRAFANA_URL` : URL du dashboard Grafana local, `http://localhost:3002` par défaut.
 
@@ -90,9 +91,17 @@ src/
 
 ## Mode démo
 
-Un bandeau dans l'application indique clairement que les recommandations viennent des mocks frontend lorsque `VITE_USE_MOCKS=true`. Les mocks sont temporaires et ne doivent pas être présentés comme une vraie IA.
+Un bandeau dans l'application indique clairement que les recommandations viennent des mocks frontend lorsque `VITE_USE_MOCKS=true`. Si `VITE_USE_MOCKS=false` mais que l'API IA est indisponible, le fallback mock reste visible via un bandeau dedie. Les mocks sont temporaires et ne doivent pas être présentés comme une vraie IA.
 
 Le profil est sauvegardé localement dans le navigateur en mode démo. Le feedback est également simulé.
+
+## Analyse repas avec fichier
+
+La page `/meal-analysis` peut envoyer une vraie image locale a l'API FastAPI avec `FormData` natif du navigateur. Aucune librairie d'upload n'est ajoutee.
+
+Quand `VITE_USE_MOCKS=false` et que l'API est lancee, le fichier est poste vers `POST /ai/meal/analyze`. Si le modele vision local n'est pas actif, le backend renvoie un resultat avec `fallbackUsed=true` et l'interface affiche un message "Analyse estimee".
+
+Les tests Vitest gardent `VITE_USE_MOCKS=true` via `vite.config.ts` pour rester stables meme si le `.env` local utilise l'API reelle.
 
 ## Documentation frontend
 
@@ -113,12 +122,14 @@ Le dashboard frontend contient un lien discret `Ouvrir Grafana`, configurable av
 Lancer l'observabilité depuis la racine du projet :
 
 ```bash
-docker compose up -d prometheus grafana
+docker compose up -d ai-service prometheus grafana blackbox-exporter
 ```
 
 URLs :
 
 - Frontend : http://localhost:5173
+- API IA : http://localhost:8000
+- Swagger API IA : http://localhost:8000/docs
 - Prometheus : http://localhost:9091
 - Grafana : http://localhost:3002
 
@@ -137,6 +148,7 @@ La documentation complète est disponible dans `../../docs/observabilite` et `..
 - Recommandation nutrition avec validation, score et contraintes.
 - Recommandation sport avec limitation physique et précaution.
 - Analyse repas avec aperçu, loading et résultats.
+- Upload image repas avec statut fallback explicite si le modele vision local est absent.
 - Historique filtrable et détail explicable.
 - Feedback et profil sauvegardé localement.
 - Tests passants : `npm run test`.
@@ -145,7 +157,9 @@ La documentation complète est disponible dans `../../docs/observabilite` et `..
 ## Limites connues
 
 - Authentification backend non branchée.
-- Recommandations IA mockées par défaut.
+- Recommandations IA mockées par défaut si `VITE_USE_MOCKS=true`.
+- Recommandations nutrition/sport API en fallback deterministe tant qu'un modele entraine n'est pas branche.
+- Analyse repas API en fallback backend tant que `torch`, `transformers` et le modele vision local ne sont pas actives dans `requirements-vision.txt`.
 - Pas de persistance MongoDB côté frontend.
 - Pas de test end-to-end navigateur.
 - `npm audit` signale des vulnérabilités à analyser avant production, dont 2 modérées sur les dépendances de production React Router.

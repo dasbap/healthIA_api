@@ -685,7 +685,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "Ce dashboard montre la disponibilite HTTP du frontend, des endpoints /health attendus, de Prometheus et de Grafana.\\n\\nLes API IA et backend peuvent etre DOWN tant que les services FastAPI/NestJS ne sont pas encore implementes. C'est volontairement visible pour ne pas confondre mocks et services reels.",
+        "content": "Ce dashboard montre la disponibilite HTTP du frontend, de l'API IA FastAPI, de Prometheus et de Grafana.\\n\\nL'API IA passe UP quand ai-service est lance. La cible NestJS peut rester DOWN sur mb3 tant qu'une gateway complete n'est pas disponible.",
         "mode": "markdown"
       },
       "pluginVersion": "11.3.0",

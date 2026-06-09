@@ -39,7 +39,7 @@ Prometheus collecte les métriques. Blackbox Exporter teste les endpoints HTTP. 
 
 ## Pourquoi cette architecture est progressive
 
-Le projet contient déjà un `docker-compose.yml` avec MongoDB, FastAPI et NestJS, mais les dossiers backend ne contiennent pas encore d'application complète. L'observabilité est donc préparée sans forcer une fausse implémentation backend.
+Le projet contient un `docker-compose.yml` avec MongoDB, l'API IA FastAPI, une cible NestJS optionnelle, Prometheus, Grafana et Blackbox Exporter. L'observabilité montre FastAPI quand `ai-service` est lance et laisse NestJS DOWN tant que la gateway complete n'est pas disponible.
 
 Aujourd'hui, les sondes HTTP montrent clairement si un endpoint est disponible ou non. Plus tard, quand FastAPI ou NestJS exposeront `/metrics`, les panels Grafana liés aux métriques applicatives pourront afficher le nombre de requêtes, les erreurs HTTP et les temps de réponse métier.
 

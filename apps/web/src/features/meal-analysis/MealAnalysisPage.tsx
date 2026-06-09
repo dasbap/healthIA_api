@@ -39,6 +39,14 @@ export function MealAnalysisPage() {
       {isLoading ? <LoadingState label="Le modèle vision démo analyse l’image..." /> : null}
       {result ? (
         <div className="dashboard-grid">
+          <div className="span-two">
+            <Alert tone={result.fallbackUsed ? 'warning' : 'success'} title={result.fallbackUsed ? 'Analyse estimée' : 'Analyse vision réelle'}>
+              {result.fallbackUsed
+                ? 'Analyse estimée : le modèle vision local n’est pas disponible, le résultat est généré par un fallback backend.'
+                : 'Analyse vision réalisée à partir de l’image envoyée.'}
+              {' '}Modèle utilisé : {result.model}. {result.explanation}
+            </Alert>
+          </div>
           <DetectedFoodsList foods={result.detectedFoods} />
           <NutritionBreakdownChart nutrition={result.nutrition} />
           <div className="span-two">

@@ -1,0 +1,1363 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "HealthIA AI Service",
+    "description": "FastAPI microservice for HealthAI meal analysis, nutrition recommendations, sport recommendations, history, feedback and observability.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Health Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "tags": [
+          "Observabilite"
+        ],
+        "summary": "Metrics Text",
+        "operationId": "metrics_text_metrics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai/meal/analyze": {
+      "post": {
+        "tags": [
+          "Analyse repas"
+        ],
+        "summary": "Analyze Meal",
+        "operationId": "analyze_meal_ai_meal_analyze_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "userId": "demo-user",
+                "imageUrl": "https://example.com/meal.jpg"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MealAnalysisResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai/nutrition/recommend": {
+      "post": {
+        "tags": [
+          "Nutrition IA"
+        ],
+        "summary": "Recommend Nutrition",
+        "operationId": "recommend_nutrition_ai_nutrition_recommend_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NutritionRecommendationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionRecommendationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai/sport/recommend": {
+      "post": {
+        "tags": [
+          "Sport IA"
+        ],
+        "summary": "Recommend Sport",
+        "operationId": "recommend_sport_ai_sport_recommend_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SportRecommendationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SportRecommendationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai/recommendations/detail/{recommendation_id}": {
+      "get": {
+        "tags": [
+          "Recommandations"
+        ],
+        "summary": "Get Recommendation Detail",
+        "operationId": "get_recommendation_detail_ai_recommendations_detail__recommendation_id__get",
+        "parameters": [
+          {
+            "name": "recommendation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Recommendation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai/recommendations/{user_id}": {
+      "get": {
+        "tags": [
+          "Recommandations"
+        ],
+        "summary": "Get Recommendation History",
+        "operationId": "get_recommendation_history_ai_recommendations__user_id__get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecommendationHistoryItem"
+                  },
+                  "title": "Response Get Recommendation History Ai Recommendations  User Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai/recommendations/{recommendation_id}/feedback": {
+      "post": {
+        "tags": [
+          "Feedback"
+        ],
+        "summary": "Create Feedback",
+        "operationId": "create_feedback_ai_recommendations__recommendation_id__feedback_post",
+        "parameters": [
+          {
+            "name": "recommendation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Recommendation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ConstraintsChecked": {
+        "properties": {
+          "allergies": {
+            "type": "boolean",
+            "title": "Allergies"
+          },
+          "diet": {
+            "type": "boolean",
+            "title": "Diet"
+          },
+          "budget": {
+            "type": "boolean",
+            "title": "Budget"
+          }
+        },
+        "type": "object",
+        "required": [
+          "allergies",
+          "diet",
+          "budget"
+        ],
+        "title": "ConstraintsChecked"
+      },
+      "DetectedFood": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "confidence"
+        ],
+        "title": "DetectedFood"
+      },
+      "Exercise": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "duration": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Duration"
+          },
+          "intensity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Intensity"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "duration",
+          "intensity",
+          "note"
+        ],
+        "title": "Exercise"
+      },
+      "FeedbackRequest": {
+        "properties": {
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Userid",
+            "default": "profile_demo_001"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id"
+          },
+          "rating": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Rating"
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rating"
+        ],
+        "title": "FeedbackRequest"
+      },
+      "FeedbackResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "recommendationId": {
+            "type": "string",
+            "title": "Recommendationid"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "ok": {
+            "type": "boolean",
+            "title": "Ok",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "message",
+          "recommendationId",
+          "status"
+        ],
+        "title": "FeedbackResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "MealAnalysisResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "analysisId": {
+            "type": "string",
+            "title": "Analysisid"
+          },
+          "type": {
+            "type": "string",
+            "const": "meal-analysis",
+            "title": "Type",
+            "default": "meal-analysis"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score"
+          },
+          "estimatedCalories": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Estimatedcalories"
+          },
+          "detectedFoods": {
+            "items": {
+              "$ref": "#/components/schemas/DetectedFood"
+            },
+            "type": "array",
+            "title": "Detectedfoods"
+          },
+          "macros": {
+            "$ref": "#/components/schemas/VisionMacros"
+          },
+          "nutrition": {
+            "$ref": "#/components/schemas/NutritionMacros"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "imbalances": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Imbalances"
+          },
+          "suggestions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Suggestions"
+          },
+          "explanation": {
+            "type": "string",
+            "title": "Explanation"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "createdAt": {
+            "type": "string",
+            "title": "Createdat"
+          },
+          "fallbackUsed": {
+            "type": "boolean",
+            "title": "Fallbackused",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "analysisId",
+          "title",
+          "score",
+          "estimatedCalories",
+          "detectedFoods",
+          "macros",
+          "nutrition",
+          "warnings",
+          "imbalances",
+          "suggestions",
+          "explanation",
+          "model",
+          "createdAt"
+        ],
+        "title": "MealAnalysisResponse"
+      },
+      "NutritionMacros": {
+        "properties": {
+          "calories": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Calories"
+          },
+          "protein": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Protein"
+          },
+          "carbs": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Carbs"
+          },
+          "fat": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Fat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "calories",
+          "protein",
+          "carbs",
+          "fat"
+        ],
+        "title": "NutritionMacros"
+      },
+      "NutritionRecommendationRequest": {
+        "properties": {
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Userid",
+            "default": "profile_demo_001"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id"
+          },
+          "goal": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal",
+            "examples": [
+              "perte de graisse"
+            ]
+          },
+          "objective": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Objective",
+            "examples": [
+              "perte de graisse"
+            ]
+          },
+          "targetCalories": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 4000.0,
+                "minimum": 300.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Targetcalories"
+          },
+          "calories_target": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 4000.0,
+                "minimum": 300.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calories Target"
+          },
+          "budget": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Budget",
+            "examples": [
+              65
+            ]
+          },
+          "weekly_budget": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Budget",
+            "examples": [
+              65
+            ]
+          },
+          "allergies": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Allergies",
+            "examples": [
+              [
+                "noisettes"
+              ]
+            ]
+          },
+          "diet": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diet",
+            "examples": [
+              "omnivore"
+            ]
+          },
+          "diet_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diet Type",
+            "examples": [
+              "omnivore"
+            ]
+          },
+          "preferences": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Preferences",
+            "examples": [
+              [
+                "repas rapides",
+                "poulet"
+              ]
+            ]
+          },
+          "activityLevel": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Activitylevel",
+            "examples": [
+              "debutant"
+            ]
+          },
+          "activity_level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Activity Level",
+            "examples": [
+              "debutant"
+            ]
+          }
+        },
+        "type": "object",
+        "title": "NutritionRecommendationRequest"
+      },
+      "NutritionRecommendationResponse": {
+        "properties": {
+          "recommendationId": {
+            "type": "string",
+            "title": "Recommendationid"
+          },
+          "type": {
+            "type": "string",
+            "const": "nutrition",
+            "title": "Type",
+            "default": "nutrition"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score"
+          },
+          "mealPlan": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Mealplan"
+          },
+          "macros": {
+            "$ref": "#/components/schemas/NutritionMacros"
+          },
+          "constraintsChecked": {
+            "$ref": "#/components/schemas/ConstraintsChecked"
+          },
+          "explanation": {
+            "type": "string",
+            "title": "Explanation"
+          },
+          "advice": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Advice"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "createdAt": {
+            "type": "string",
+            "title": "Createdat"
+          },
+          "fallbackUsed": {
+            "type": "boolean",
+            "title": "Fallbackused",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "recommendationId",
+          "title",
+          "score",
+          "mealPlan",
+          "macros",
+          "constraintsChecked",
+          "explanation",
+          "advice",
+          "model",
+          "createdAt"
+        ],
+        "title": "NutritionRecommendationResponse"
+      },
+      "RecommendationDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "nutrition",
+              "sport",
+              "meal-analysis"
+            ],
+            "title": "Type"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "completed",
+              "reviewed",
+              "flagged"
+            ],
+            "title": "Status"
+          },
+          "createdAt": {
+            "type": "string",
+            "title": "Createdat"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "userInput": {
+            "type": "string",
+            "title": "Userinput"
+          },
+          "aiResult": {
+            "type": "string",
+            "title": "Airesult"
+          },
+          "explanation": {
+            "type": "string",
+            "title": "Explanation"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "modelVersion": {
+            "type": "string",
+            "title": "Modelversion"
+          },
+          "signals": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Signals"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "title",
+          "score",
+          "status",
+          "createdAt",
+          "summary",
+          "userInput",
+          "aiResult",
+          "explanation",
+          "model",
+          "modelVersion",
+          "signals"
+        ],
+        "title": "RecommendationDetail"
+      },
+      "RecommendationHistoryItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "nutrition",
+              "sport",
+              "meal-analysis"
+            ],
+            "title": "Type"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "completed",
+              "reviewed",
+              "flagged"
+            ],
+            "title": "Status"
+          },
+          "createdAt": {
+            "type": "string",
+            "title": "Createdat"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "title",
+          "score",
+          "status",
+          "createdAt",
+          "summary"
+        ],
+        "title": "RecommendationHistoryItem"
+      },
+      "SportRecommendationRequest": {
+        "properties": {
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Userid",
+            "default": "profile_demo_001"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id"
+          },
+          "goal": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Goal",
+            "default": "perte de graisse"
+          },
+          "objective": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Objective"
+          },
+          "level": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Level",
+            "default": "debutant"
+          },
+          "duration": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 180.0,
+                "minimum": 10.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration"
+          },
+          "duration_minutes": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 180.0,
+                "minimum": 10.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Minutes"
+          },
+          "equipment": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Equipment"
+          },
+          "preferences": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Preferences"
+          },
+          "limitations": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Limitations"
+          },
+          "physical_limitations": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Physical Limitations"
+          },
+          "fatigue": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Fatigue",
+            "default": "moderee"
+          },
+          "sessionsPerWeek": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 7.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionsperweek"
+          },
+          "sessions_per_week": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 7.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessions Per Week"
+          }
+        },
+        "type": "object",
+        "title": "SportRecommendationRequest"
+      },
+      "SportRecommendationResponse": {
+        "properties": {
+          "recommendationId": {
+            "type": "string",
+            "title": "Recommendationid"
+          },
+          "type": {
+            "type": "string",
+            "const": "sport",
+            "title": "Type",
+            "default": "sport"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score"
+          },
+          "duration": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Duration"
+          },
+          "intensity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Intensity"
+          },
+          "exercises": {
+            "items": {
+              "$ref": "#/components/schemas/Exercise"
+            },
+            "type": "array",
+            "title": "Exercises"
+          },
+          "explanation": {
+            "type": "string",
+            "title": "Explanation"
+          },
+          "warning": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Warning"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "createdAt": {
+            "type": "string",
+            "title": "Createdat"
+          },
+          "fallbackUsed": {
+            "type": "boolean",
+            "title": "Fallbackused",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "recommendationId",
+          "title",
+          "score",
+          "duration",
+          "intensity",
+          "exercises",
+          "explanation",
+          "model",
+          "createdAt"
+        ],
+        "title": "SportRecommendationResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VisionMacros": {
+        "properties": {
+          "proteins": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Proteins"
+          },
+          "carbs": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Carbs"
+          },
+          "fats": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Fats"
+          }
+        },
+        "type": "object",
+        "required": [
+          "proteins",
+          "carbs",
+          "fats"
+        ],
+        "title": "VisionMacros"
+      }
+    }
+  }
+}

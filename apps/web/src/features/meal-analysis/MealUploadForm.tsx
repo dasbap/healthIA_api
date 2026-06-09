@@ -6,13 +6,14 @@ import { Card, CardHeader } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 
 type MealUploadFormProps = {
-  onSubmit: (payload: { imageUrl?: string; fileName?: string; previewUrl?: string }) => void;
+  onSubmit: (payload: { imageUrl?: string; file?: File; fileName?: string; previewUrl?: string }) => void;
   isLoading: boolean;
 };
 
 export function MealUploadForm({ onSubmit, isLoading }: MealUploadFormProps) {
   const [imageUrl, setImageUrl] = useState('https://images.unsplash.com/photo-1546069901-ba9599a7e63c');
   const [fileName, setFileName] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState('');
   const [error, setError] = useState('');
   const [isDragging, setIsDragging] = useState(false);
@@ -34,6 +35,7 @@ export function MealUploadForm({ onSubmit, isLoading }: MealUploadFormProps) {
       URL.revokeObjectURL(previewUrl);
     }
     setFileName(file.name);
+    setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
     setError('');
   }
@@ -70,12 +72,12 @@ export function MealUploadForm({ onSubmit, isLoading }: MealUploadFormProps) {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!imageUrl.trim() && !fileName) {
+    if (!imageUrl.trim() && !selectedFile) {
       setError('Ajoutez une URL d’image ou sélectionnez un fichier repas.');
       return;
     }
     setError('');
-    onSubmit({ imageUrl, fileName, previewUrl });
+    onSubmit(selectedFile ? { file: selectedFile, fileName, previewUrl } : { imageUrl, previewUrl });
   }
 
   return (
@@ -83,7 +85,7 @@ export function MealUploadForm({ onSubmit, isLoading }: MealUploadFormProps) {
       <CardHeader>
         <div>
           <h2>Source du repas</h2>
-          <p>URL d’image ou fichier local pour simuler l’analyse vision. Aucun fichier n’est envoyé au serveur en mode démo.</p>
+          <p>URL d’image ou fichier local envoyé à l’API IA pour analyse.</p>
         </div>
       </CardHeader>
       <form className="form-grid" onSubmit={handleSubmit} noValidate>

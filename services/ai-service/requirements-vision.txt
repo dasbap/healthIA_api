@@ -1,0 +1,4 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+# Optional local vision stack. Pillow stays in requirements.txt because upload validation uses it in fallback mode too.
+torch==2.5.1+cpu
+transformers==4.47.1

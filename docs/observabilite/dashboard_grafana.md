@@ -22,13 +22,14 @@ Il est placé dans le dossier Grafana `HealthAI Coach`.
 | Temps de réponse HTTP | Durée des sondes HTTP | `probe_duration_seconds` |
 | Codes HTTP des endpoints | Codes retournés par les endpoints sondés | `probe_http_status_code` |
 | Services disponibles | Nombre de sondes HTTP en succès | `probe_success` |
-| Métriques applicatives API | État des futurs endpoints `/metrics` | `up{job="healthai-api-metrics"}` |
+| Métriques applicatives API | État des endpoints `/metrics` API IA et gateway optionnelle | `up{job="healthai-api-metrics"}` |
 
 ## Interprétation UP/DOWN
 
 - `UP` signifie que la sonde HTTP a reçu une réponse valide.
 - `DOWN` signifie que le service ne répond pas, que le DNS Docker ne résout pas la cible, ou que l'endpoint attendu n'existe pas encore.
-- Pour FastAPI et NestJS, un statut DOWN est normal tant que les applications backend ne sont pas réellement implémentées.
+- Pour l'API IA FastAPI, le statut doit passer UP quand `ai-service` est lance.
+- Pour NestJS, un statut DOWN reste normal sur `mb3` tant que la gateway complete n'est pas lancee.
 
 ## Temps de réponse
 

@@ -4,9 +4,9 @@
 
 Le frontend React ne fournit pas naturellement de métriques Prometheus. Il est donc surveillé par disponibilité HTTP via Blackbox Exporter.
 
-Les dossiers `fastapi` et `nestjs` existent, mais ne contiennent pas encore d'application complète. Les endpoints `/health` et `/metrics` sont donc des cibles attendues, pas des services garantis dans l'état actuel du dépôt.
+L'API IA FastAPI est maintenant disponible dans `services/ai-service` avec `/health` et `/metrics`. Le dossier `nestjs` reste un placeholder sur `mb3`; sa cible peut donc rester DOWN tant qu'une gateway NestJS complete n'est pas lancee.
 
-Les métriques métier IA sont limitées tant que le moteur IA réel n'est pas connecté. Les recommandations nutrition, sport et analyse repas restent majoritairement en mode démo/mocks côté frontend.
+Les métriques métier IA existent sur les appels HTTP et les compteurs de fallback. Elles restent limitees tant qu'un modele nutrition/sport entraine n'est pas branche. Les recommandations nutrition et sport API sont des fallbacks deterministes documentes.
 
 Le dashboard est local. Il ne remplace pas une supervision de production avec authentification renforcée, alerting complet, stockage long terme et gestion des incidents.
 
@@ -20,15 +20,16 @@ Aujourd'hui, on peut observer :
 - Grafana ;
 - Blackbox Exporter ;
 - la disponibilité HTTP du frontend si Vite est lancé ;
-- les tentatives de sondes `/health` vers FastAPI et NestJS ;
-- les futures cibles `/metrics` dès qu'elles seront implémentées.
+- la sonde `/health` de l'API IA FastAPI ;
+- les metriques `/metrics` de l'API IA FastAPI ;
+- la sonde NestJS si la gateway est lancee.
 
 ## Améliorations futures
 
 Les évolutions utiles seraient :
 
-- ajouter `/health` dans FastAPI et NestJS ;
-- instrumenter FastAPI avec `prometheus-fastapi-instrumentator` ;
+- brancher une gateway NestJS complete si elle devient necessaire ;
+- enrichir l'instrumentation FastAPI avec `prometheus-fastapi-instrumentator` si un histogramme plus avance est attendu ;
 - instrumenter NestJS avec un module Prometheus compatible ;
 - suivre le temps de génération des recommandations IA ;
 - suivre le taux d'erreur par endpoint ;

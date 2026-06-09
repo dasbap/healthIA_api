@@ -58,7 +58,7 @@ Aller dans `Status > Targets` et vérifier :
 - `prometheus` UP ;
 - `blackbox-exporter` UP ;
 - `healthai-http-availability` avec les cibles visibles ;
-- `healthai-api-metrics` prêt pour les futurs endpoints `/metrics`.
+- `healthai-api-metrics` prêt pour `/metrics` FastAPI et pour la gateway NestJS optionnelle.
 
 Les targets FastAPI/NestJS peuvent être DOWN tant que les services backend ne sont pas disponibles.
 

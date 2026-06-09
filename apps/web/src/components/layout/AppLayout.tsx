@@ -1,11 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import { apiFallbackEventName } from '../../api/httpClient';
 import { env } from '../../config/env';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 
 export function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [fallbackActive, setFallbackActive] = useState(env.useMocks);
+
+  useEffect(() => {
+    function handleApiFallback() {
+      setFallbackActive(true);
+    }
+
+    window.addEventListener(apiFallbackEventName, handleApiFallback);
+    return () => window.removeEventListener(apiFallbackEventName, handleApiFallback);
+  }, []);
 
   return (
     <div className="app-shell">
@@ -15,9 +26,11 @@ export function AppLayout() {
       <Sidebar isOpen={sidebarOpen} onNavigate={() => setSidebarOpen(false)} />
       <div className="app-main">
         <Topbar onMenuClick={() => setSidebarOpen((open) => !open)} />
-        {env.useMocks ? (
+        {fallbackActive ? (
           <div className="mock-banner" role="status" aria-live="polite">
-            Mode démo : les recommandations affichées proviennent des mocks frontend tant que l’API IA n’est pas connectée.
+            {env.useMocks
+              ? 'Mode démo : les recommandations affichées proviennent des mocks frontend tant que l’API IA n’est pas connectée.'
+              : 'API IA indisponible : affichage temporaire des mocks frontend.'}
           </div>
         ) : null}
         <main id="main-content" className="content" tabIndex={-1}>

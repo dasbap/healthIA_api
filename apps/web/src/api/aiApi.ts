@@ -14,17 +14,23 @@ export type NutritionMacros = {
 
 export type MealAnalysisRequest = {
   imageUrl?: string;
+  file?: File;
   fileName?: string;
 };
 
 export type MealAnalysisResponse = {
   analysisId: string;
+  type?: 'meal-analysis';
+  title?: string;
+  score?: number;
   detectedFoods: DetectedFood[];
   nutrition: NutritionMacros;
   imbalances: string[];
   suggestions: string[];
+  explanation: string;
   model: string;
   createdAt: string;
+  fallbackUsed: boolean;
 };
 
 export type NutritionRecommendationRequest = {
@@ -84,11 +90,13 @@ export type SportRecommendation = {
 };
 
 export async function analyzeMeal(request: MealAnalysisRequest): Promise<MealAnalysisResponse> {
+  const body = request.file ? buildMealAnalysisFormData(request) : JSON.stringify({ imageUrl: request.imageUrl });
+
   return withApiFallback(
     () =>
       httpClient<MealAnalysisResponse>('/ai/meal/analyze', {
         method: 'POST',
-        body: JSON.stringify(request),
+        body,
         fallbackLabel: 'Analyse repas indisponible'
       }),
     async () => {
@@ -113,11 +121,28 @@ export async function analyzeMeal(request: MealAnalysisRequest): Promise<MealAna
           'Réduire légèrement la portion de riz',
           'Conserver la source de protéines maigres'
         ],
+        explanation:
+          'Analyse estimée : le modèle vision local n’est pas disponible, le résultat est généré par un fallback frontend.',
         model: 'healthai-vision-demo',
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        fallbackUsed: true
       };
     }
   );
+}
+
+function buildMealAnalysisFormData(request: MealAnalysisRequest) {
+  if (!request.file) {
+    throw new Error('Aucun fichier image a envoyer.');
+  }
+
+  const formData = new FormData();
+  formData.append('userId', 'profile_demo_001');
+  formData.append('file', request.file);
+  if (request.fileName) {
+    formData.append('fileName', request.fileName);
+  }
+  return formData;
 }
 
 export async function generateNutritionRecommendation(
