@@ -1,0 +1,69 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Prometheus se supervise lui-meme pour verifier que le serveur de metriques fonctionne.
+  - job_name: prometheus
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - localhost:9091
+        labels:
+          service: prometheus
+          domaine: observabilite
+
+  # Blackbox Exporter expose les resultats des sondes HTTP sous forme de metriques Prometheus.
+  - job_name: blackbox-exporter
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - localhost:9116
+        labels:
+          service: blackbox-exporter
+          domaine: observabilite
+
+  # Verification de disponibilite HTTP des services HealthAI Coach.
+  # Le frontend React/Vite ne fournit pas de /metrics Prometheus natif :
+  # il est donc surveille via une sonde HTTP depuis Blackbox Exporter.
+  - job_name: healthai-http-availability
+    metrics_path: /probe
+    params:
+      module:
+        - http_2xx
+    static_configs:
+      - targets:
+          - http://localhost:5173
+          - http://localhost:3000/health
+          - http://localhost:8000/health
+          - http://localhost:9091/-/ready
+          - http://localhost:3002/api/health
+        labels:
+          projet: healthai-coach
+          check_type: disponibilite_http
+    relabel_configs:
+      - source_labels:
+          - __address__
+        target_label: __param_target
+      - source_labels:
+          - __param_target
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9116
+
+  # Metriques applicatives pretes pour les futurs backends.
+  # Aujourd'hui les dossiers fastapi/ et nestjs/ ne contiennent pas encore
+  # d'application complete ; ces cibles passeront UP quand /metrics existera.
+  - job_name: healthai-api-metrics
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - localhost:3000
+        labels:
+          service: backend-gateway
+          domaine: api
+      - targets:
+          - localhost:8000
+        labels:
+          service: ai-service
+          domaine: ia

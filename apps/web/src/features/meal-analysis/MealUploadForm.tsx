@@ -1,4 +1,4 @@
-import { FormEvent, type ChangeEvent, useEffect, useState } from 'react';
+import { FormEvent, type ChangeEvent, type DragEvent, useEffect, useState } from 'react';
 import { UploadCloud } from 'lucide-react';
 import { Alert } from '../../components/ui/Alert';
 import { Button } from '../../components/ui/Button';
@@ -15,6 +15,7 @@ export function MealUploadForm({ onSubmit, isLoading }: MealUploadFormProps) {
   const [fileName, setFileName] = useState('');
   const [previewUrl, setPreviewUrl] = useState('');
   const [error, setError] = useState('');
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -24,14 +25,47 @@ export function MealUploadForm({ onSubmit, isLoading }: MealUploadFormProps) {
     };
   }, [previewUrl]);
 
+  function selectFile(file: File) {
+    if (!file.type.startsWith('image/')) {
+      setError('Déposez une image au format PNG, JPG ou WebP.');
+      return;
+    }
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setFileName(file.name);
+    setPreviewUrl(URL.createObjectURL(file));
+    setError('');
+  }
+
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) {
       return;
     }
-    setFileName(file.name);
-    setPreviewUrl(URL.createObjectURL(file));
-    setError('');
+    selectFile(file);
+  }
+
+  function handleDragOver(event: DragEvent<HTMLLabelElement>) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    setIsDragging(true);
+  }
+
+  function handleDragLeave(event: DragEvent<HTMLLabelElement>) {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      setIsDragging(false);
+    }
+  }
+
+  function handleDrop(event: DragEvent<HTMLLabelElement>) {
+    event.preventDefault();
+    setIsDragging(false);
+    const file = event.dataTransfer.files?.[0];
+    if (!file) {
+      return;
+    }
+    selectFile(file);
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -64,9 +98,16 @@ export function MealUploadForm({ onSubmit, isLoading }: MealUploadFormProps) {
           }}
           hint="Exemple accepté : URL publique d’une photo de repas."
         />
-        <label className="file-drop" htmlFor="meal-file">
+        <label
+          className={`file-drop ${isDragging ? 'file-drop-active' : ''}`}
+          htmlFor="meal-file"
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
           <UploadCloud aria-hidden="true" />
-          <span>{fileName || 'Choisir une photo de repas'}</span>
+          <span>{fileName || 'Glisser-déposer une photo ici, ou choisir une photo de repas'}</span>
           <input id="meal-file" type="file" accept="image/*" onChange={handleFileChange} />
         </label>
         {previewUrl || imageUrl ? (

@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { Activity, BrainCircuit, Salad, Server } from 'lucide-react';
+import { Activity, BrainCircuit, ExternalLink, Gauge, Salad, Server } from 'lucide-react';
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { checkApiHealth } from '../../api/httpClient';
 import { getRecommendationHistory } from '../../api/recommendationsApi';
 import { Alert } from '../../components/ui/Alert';
 import { Card, CardHeader } from '../../components/ui/Card';
 import { LoadingState } from '../../components/states/LoadingState';
+import { env } from '../../config/env';
 import { KpiCard } from './KpiCard';
 import { RecommendationOverview } from './RecommendationOverview';
 
@@ -112,6 +113,22 @@ export function DashboardPage() {
           <div className="list-stack">
             <Alert tone="warning" title="Glucides élevés">Deux analyses récentes indiquent une portion de féculents supérieure à l’objectif.</Alert>
             <Alert tone="success" title="Protéines correctes">Les apports protéiques restent cohérents avec l’objectif principal.</Alert>
+          </div>
+        </Card>
+        <Card className="observability-card span-two">
+          <CardHeader>
+            <div>
+              <h2>Observabilité</h2>
+              <p>Prometheus, Grafana et disponibilité HTTP des services HealthAI.</p>
+            </div>
+            <Gauge size={24} aria-hidden="true" />
+          </CardHeader>
+          <div className="observability-actions">
+            <span>Dashboard local : HealthAI Coach - Observabilité globale</span>
+            <a className="link-button" href={env.grafanaUrl} target="_blank" rel="noreferrer">
+              <ExternalLink size={16} aria-hidden="true" />
+              Ouvrir Grafana
+            </a>
           </div>
         </Card>
       </div>

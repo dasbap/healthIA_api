@@ -478,6 +478,19 @@ h3 {
   grid-column: 1 / -1;
 }
 
+.observability-card .card-header > svg {
+  color: var(--teal-dark);
+  flex: 0 0 auto;
+}
+
+.observability-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--muted);
+}
+
 .chart-box {
   width: 100%;
   min-height: 230px;
@@ -595,6 +608,17 @@ h3 {
   color: var(--teal-dark);
   background: #effcf8;
   cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.file-drop:hover,
+.file-drop-active {
+  background: #dff7ef;
+  border-color: var(--teal-dark);
+  transform: translateY(-1px);
 }
 
 .file-drop:focus-within {
@@ -895,6 +919,11 @@ h3 {
   .exercise-row,
   .history-row {
     grid-template-columns: 1fr;
+  }
+
+  .observability-actions {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .history-meta {

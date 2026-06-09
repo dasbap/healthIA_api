@@ -47,10 +47,12 @@ Créer un fichier `.env` dans `apps/web` si besoin :
 ```bash
 VITE_API_BASE_URL=http://localhost:3000
 VITE_USE_MOCKS=true
+VITE_GRAFANA_URL=http://localhost:3002
 ```
 
 - `VITE_API_BASE_URL` : URL du backend principal, `http://localhost:3000` par défaut.
 - `VITE_USE_MOCKS` : `true` par défaut. Si la valeur est `false`, le frontend tente l'API réelle puis retombe sur les mocks en cas d'erreur.
+- `VITE_GRAFANA_URL` : URL du dashboard Grafana local, `http://localhost:3002` par défaut.
 
 ## Routes principales
 
@@ -104,9 +106,34 @@ Les livrables membre 3 sont dans `../../docs/frontend` :
 - `front_tests_report.md`
 - `soutenance_frontend.md`
 
+## Observabilité Prometheus / Grafana
+
+Le dashboard frontend contient un lien discret `Ouvrir Grafana`, configurable avec `VITE_GRAFANA_URL`.
+
+Lancer l'observabilité depuis la racine du projet :
+
+```bash
+docker compose up -d prometheus grafana
+```
+
+URLs :
+
+- Frontend : http://localhost:5173
+- Prometheus : http://localhost:9091
+- Grafana : http://localhost:3002
+
+Identifiants Grafana de démonstration :
+
+```text
+admin / admin
+```
+
+La documentation complète est disponible dans `../../docs/observabilite` et `../../monitoring/README_MONITORING.md`.
+
 ## Éléments à montrer en soutenance
 
 - Dashboard avec KPI, graphiques et état API/mock.
+- Carte Observabilité avec ouverture du dashboard Grafana.
 - Recommandation nutrition avec validation, score et contraintes.
 - Recommandation sport avec limitation physique et précaution.
 - Analyse repas avec aperçu, loading et résultats.
