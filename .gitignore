@@ -33,7 +33,9 @@ ai-service/data/training/
 ai-service/data/models/
 ai-service/data/sample_images/
 ai-service/notebooks/.ipynb_checkpoints/
+ai-service/.ipynb_checkpoints/
+**/.ipynb_checkpoints/
 ai-service/**/__pycache__/
 ai-service/.env
 
-.venv
+venv/

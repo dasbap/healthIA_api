@@ -1,28 +1,28 @@
-"""
-Script de téléchargement du dataset Food Types v3 (Roboflow)
-Exécuter une seule fois : python data/download_data.py
-"""
-
-import urllib.request
-import zipfile
 import os
 
-DATASET_URL = "https://universe.roboflow.com/ds/OmPTSxQFVu?key=uAZcal35rz"
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "raw/nutrition")
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "raw/nutrition")
 
 def download_dataset():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    zip_path = os.path.join(OUTPUT_DIR, "food_types.zip")
     
-    print("Téléchargement du dataset Food Types v3...")
-    urllib.request.urlretrieve(DATASET_URL, zip_path)
+    # Aller dans le dossier de destination avant de télécharger
+    original_dir = os.getcwd()
+    os.chdir(OUTPUT_DIR)
     
-    print("Extraction...")
-    with zipfile.ZipFile(zip_path, 'r') as z:
-        z.extractall(OUTPUT_DIR)
+    print(f"Téléchargement dans : {OUTPUT_DIR}")
     
-    os.remove(zip_path)
-    print("Dataset prêt dans data/raw/nutrition/")
+    try:
+        from roboflow import Roboflow
+        rf = Roboflow(api_key="0SGNDkoU0qibztM89kqi")
+        project = rf.workspace("juan-workspace").project("food-types-po0yz")
+        version = project.version(3)
+        version.download("folder")
+        print("Dataset prêt dans data/raw/nutrition/")
+        
+    except Exception as e:
+        print(f"Erreur : {e}")
+    finally:
+        os.chdir(original_dir)
 
 if __name__ == "__main__":
     download_dataset()
