@@ -4,18 +4,10 @@ Modèle nateraw/food fine-tuné sur Food Types v3 (Roboflow, 15 classes, 6111 im
 Accuracy : 95.39%
 """
 
-from transformers import AutoImageProcessor, AutoModelForImageClassification
-from PIL import Image
-import torch
 import os
 
 # Chemin vers le modèle fine-tuné
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "../../data/models/meal_image_analyzer")
-
-# Chargement du modèle
-image_processor = AutoImageProcessor.from_pretrained(MODEL_PATH)
-model = AutoModelForImageClassification.from_pretrained(MODEL_PATH)
-model.eval()
 
 
 def analyze_meal_image(image_path: str, top_k: int = 3) -> dict:
@@ -30,6 +22,14 @@ def analyze_meal_image(image_path: str, top_k: int = 3) -> dict:
         dict avec detected_foods (label + confidence)
     """
     try:
+        from transformers import AutoImageProcessor, AutoModelForImageClassification
+        from PIL import Image
+        import torch
+
+        image_processor = AutoImageProcessor.from_pretrained(MODEL_PATH)
+        model = AutoModelForImageClassification.from_pretrained(MODEL_PATH)
+        model.eval()
+
         image = Image.open(image_path).convert("RGB")
         inputs = image_processor(images=image, return_tensors="pt")
 

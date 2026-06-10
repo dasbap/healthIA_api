@@ -5,12 +5,19 @@ Tests unitaires — Module 1 : Analyse de photo de repas
 import pytest
 import os
 import sys
+from pathlib import Path
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from app.recommender.meal_image_analyzer import analyze_meal_image
 
 # Image de test
 TEST_IMAGE_DIR = os.path.join(os.path.dirname(__file__), "../../data/raw/nutrition/Food Types.v3i.folder/test")
+MODEL_DIR = Path(__file__).resolve().parents[2] / "data" / "models" / "meal_image_analyzer"
+
+pytestmark = pytest.mark.skipif(
+    not MODEL_DIR.exists() or not os.path.exists(TEST_IMAGE_DIR),
+    reason="fine-tuned model and Food Types test dataset are not available locally",
+)
 
 
 def get_test_image(class_name: str) -> str:
