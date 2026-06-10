@@ -8,14 +8,6 @@ Préparer les données et développer le moteur de recommandation.
 ### Compétences évaluées couvertes
 - Générer / récolter / adapter les données
 - Paramétrer l’environnement IA
-- Coder le mod## Membre 1 — Data / IA / Modèle
-
-### Responsabilité principale
-Préparer les données et développer le moteur de recommandation.
-
-### Compétences évaluées couvertes
-- Générer / récolter / adapter les données
-- Paramétrer l’environnement IA
 - Coder le modèle
 - Entraîner le modèle
 - Tester les performances
