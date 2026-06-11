@@ -1,4 +1,5 @@
 import { ApiError, httpClient, mockDelay, withApiFallback } from './httpClient';
+import { defaultUserProfile } from './usersApi';
 
 export type RecommendationType = 'nutrition' | 'sport' | 'meal-analysis';
 export type RecommendationStatus = 'completed' | 'reviewed' | 'flagged';
@@ -89,7 +90,7 @@ export const mockRecommendations: RecommendationDetail[] = [
   }
 ];
 
-export async function getRecommendationHistory(userId = 'profile_demo_001'): Promise<RecommendationHistoryItem[]> {
+export async function getRecommendationHistory(userId = defaultUserProfile.userId): Promise<RecommendationHistoryItem[]> {
   return withApiFallback(
     () =>
       httpClient<RecommendationHistoryItem[]>(`/ai/recommendations/${userId}`, {
@@ -121,12 +122,17 @@ export async function getRecommendationDetail(id: string): Promise<Recommendatio
   );
 }
 
-export async function sendFeedback(id: string, rating: number, comment: string): Promise<{ ok: boolean }> {
+export async function sendFeedback(
+  id: string,
+  userId: string,
+  rating: number,
+  comment: string
+): Promise<{ ok: boolean }> {
   return withApiFallback(
     () =>
       httpClient<{ ok: boolean }>(`/ai/recommendations/${id}/feedback`, {
         method: 'POST',
-        body: JSON.stringify({ rating, comment }),
+        body: JSON.stringify({ userId, rating, comment }),
         fallbackLabel: 'Feedback indisponible'
       }),
     async () => {

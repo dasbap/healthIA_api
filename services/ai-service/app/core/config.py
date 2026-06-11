@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     app_name: str = "HealthIA AI Service"
     environment: str = "development"
     mongo_enabled: bool = True
-    mongo_uri: str = "mongodb://root:rootpassword@localhost:27017"
+    mongo_uri: str = "mongodb://root:change-me-dev-password@localhost:27017"
     mongo_db: str = "healthia"
     mongo_timeout_ms: int = 1200
     service_token: str | None = None
@@ -31,6 +31,22 @@ class Settings(BaseSettings):
     vision_model_path: str | None = Field(
         default=None,
         validation_alias=AliasChoices("AI_SERVICE_VISION_MODEL_PATH", "VISION_MODEL_PATH"),
+    )
+    nutrition_model_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("AI_SERVICE_NUTRITION_MODEL_ENABLED", "NUTRITION_MODEL_ENABLED"),
+    )
+    nutrition_model_path: str | None = Field(
+        default="./data/models/nutrition_model.joblib",
+        validation_alias=AliasChoices("AI_SERVICE_NUTRITION_MODEL_PATH", "NUTRITION_MODEL_PATH"),
+    )
+    sport_model_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("AI_SERVICE_SPORT_MODEL_ENABLED", "SPORT_MODEL_ENABLED"),
+    )
+    sport_model_path: str | None = Field(
+        default="./data/models/sport_model.joblib",
+        validation_alias=AliasChoices("AI_SERVICE_SPORT_MODEL_PATH", "SPORT_MODEL_PATH"),
     )
 
     @property

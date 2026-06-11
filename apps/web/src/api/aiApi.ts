@@ -1,4 +1,5 @@
 import { httpClient, mockDelay, withApiFallback } from './httpClient';
+import { defaultUserProfile } from './usersApi';
 
 export type DetectedFood = {
   label: string;
@@ -13,6 +14,7 @@ export type NutritionMacros = {
 };
 
 export type MealAnalysisRequest = {
+  userId?: string;
   imageUrl?: string;
   file?: File;
   fileName?: string;
@@ -34,35 +36,54 @@ export type MealAnalysisResponse = {
 };
 
 export type NutritionRecommendationRequest = {
+  userId?: string;
   goal: string;
   targetCalories: number;
   budget: number;
   allergies: string;
   diet: string;
+  dietaryRestrictions?: string;
   preferences: string;
+  activityLevel?: string;
 };
 
 export type NutritionRecommendation = {
   recommendationId: string;
+  id?: string;
+  userId?: string;
   type: 'nutrition';
   title: string;
   score: number;
+  scoreLabel?: string;
+  summary?: string;
+  calories?: number;
   mealPlan: string[];
+  recommendations?: string[];
   macros: NutritionMacros;
   constraintsChecked: {
     allergies: boolean;
     diet: boolean;
     budget: boolean;
   };
+  respectedConstraints?: {
+    allergies: boolean;
+    diet: boolean;
+    budget: boolean;
+  };
+  warnings?: string[];
   explanation: string;
   advice: string[];
   model: string;
+  createdAt?: string;
+  fallbackUsed?: boolean;
 };
 
 export type SportRecommendationRequest = {
+  userId?: string;
   goal: string;
   level: string;
   duration: number;
+  sessionsPerWeek?: number;
   equipment: string;
   preferences: string;
   limitations: string;
@@ -78,19 +99,30 @@ export type Exercise = {
 
 export type SportRecommendation = {
   recommendationId: string;
+  id?: string;
+  userId?: string;
   type: 'sport';
   title: string;
   score: number;
+  scoreLabel?: string;
+  summary?: string;
   duration: number;
+  durationMinutes?: number;
+  sessionsPerWeek?: number;
   intensity: 'low' | 'medium' | 'high';
   exercises: Exercise[];
   explanation: string;
+  precautions?: string[];
   warning?: string;
   model: string;
+  createdAt?: string;
+  fallbackUsed?: boolean;
 };
 
 export async function analyzeMeal(request: MealAnalysisRequest): Promise<MealAnalysisResponse> {
-  const body = request.file ? buildMealAnalysisFormData(request) : JSON.stringify({ imageUrl: request.imageUrl });
+  const body = request.file
+    ? buildMealAnalysisFormData(request)
+    : JSON.stringify({ userId: request.userId ?? defaultUserProfile.userId, imageUrl: request.imageUrl });
 
   return withApiFallback(
     () =>
@@ -137,7 +169,7 @@ function buildMealAnalysisFormData(request: MealAnalysisRequest) {
   }
 
   const formData = new FormData();
-  formData.append('userId', 'profile_demo_001');
+  formData.append('userId', request.userId ?? defaultUserProfile.userId);
   formData.append('file', request.file);
   if (request.fileName) {
     formData.append('fileName', request.fileName);
@@ -181,7 +213,9 @@ export async function generateNutritionRecommendation(
           'Ajouter des crudités si la faim persiste',
           'Boire un verre d’eau avant le repas pour mieux évaluer la satiété'
         ],
-        model: 'healthai-nutrition-demo-v0.3'
+        model: 'healthai-nutrition-demo-v0.3',
+        createdAt: new Date().toISOString(),
+        fallbackUsed: true
       };
     }
   );
@@ -218,7 +252,9 @@ export async function generateSportRecommendation(
         warning: hasLimitation
           ? 'Limitation déclarée prise en compte : éviter toute douleur vive et réduire l’amplitude des mouvements.'
           : undefined,
-        model: 'healthai-sport-demo-v0.2'
+        model: 'healthai-sport-demo-v0.2',
+        createdAt: new Date().toISOString(),
+        fallbackUsed: true
       };
     }
   );

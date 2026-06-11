@@ -7,8 +7,8 @@ services:
     volumes:
       - mongodb_data:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-change-me-dev-password}
 
   ai-service:
     build:
@@ -24,7 +24,7 @@ services:
     environment:
       AI_SERVICE_ENVIRONMENT: ${AI_SERVICE_ENVIRONMENT:-docker}
       AI_SERVICE_MONGO_ENABLED: ${AI_SERVICE_MONGO_ENABLED:-true}
-      AI_SERVICE_MONGO_URI: ${AI_SERVICE_MONGO_URI:-mongodb://root:rootpassword@mongodb:27017}
+      AI_SERVICE_MONGO_URI: ${AI_SERVICE_MONGO_URI:-mongodb://root:change-me-dev-password@mongodb:27017}
       AI_SERVICE_MONGO_DB: ${AI_SERVICE_MONGO_DB:-healthia}
       AI_SERVICE_MONGO_TIMEOUT_MS: ${AI_SERVICE_MONGO_TIMEOUT_MS:-1200}
       AI_SERVICE_SERVICE_TOKEN: ${AI_SERVICE_SERVICE_TOKEN:-}
@@ -33,6 +33,10 @@ services:
       AI_SERVICE_VISION_MODEL_NAME: ${VISION_MODEL_NAME:-nateraw/food}
       AI_SERVICE_VISION_DEVICE: ${VISION_DEVICE:-cpu}
       AI_SERVICE_VISION_MODEL_PATH: ${AI_SERVICE_VISION_MODEL_PATH:-}
+      AI_SERVICE_NUTRITION_MODEL_ENABLED: ${NUTRITION_MODEL_ENABLED:-false}
+      AI_SERVICE_NUTRITION_MODEL_PATH: ${NUTRITION_MODEL_PATH:-./data/models/nutrition_model.joblib}
+      AI_SERVICE_SPORT_MODEL_ENABLED: ${SPORT_MODEL_ENABLED:-false}
+      AI_SERVICE_SPORT_MODEL_PATH: ${SPORT_MODEL_PATH:-./data/models/sport_model.joblib}
     healthcheck:
       test:
         - CMD
@@ -89,7 +93,7 @@ services:
       - "3002:3002"
     environment:
       GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-change-me-grafana-password}
       GF_USERS_ALLOW_SIGN_UP: "false"
       GF_SERVER_HTTP_PORT: 3002
     volumes:

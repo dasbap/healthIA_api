@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { RecommendationHistoryPage } from '../features/recommendations/RecommendationHistoryPage';
 
@@ -19,6 +20,10 @@ function renderWithProviders() {
 }
 
 describe('RecommendationHistoryPage', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   it('affiche l’historique et filtre les recommandations sportives', async () => {
     renderWithProviders();
 

@@ -18,6 +18,22 @@ async def test_health_returns_status(api_client):
     assert "torch" in body["vision"]
     assert "transformers" in body["vision"]
     assert body["vision"]["fallbackAvailable"] is True
+    assert body["nutritionModel"]["enabled"] is True
+    assert body["nutritionModel"]["engineAvailable"] is True
+    assert body["nutritionModel"]["engineType"] == "rules-scoring"
+    assert body["nutritionModel"]["trainedModelAvailable"] is False
+    assert body["nutritionModel"]["modelAvailable"] is False
+    assert body["nutritionModel"]["fallbackAvailable"] is True
+    assert body["nutritionModel"]["fallbackUsedByDefault"] is False
+    assert body["nutritionModel"]["modelName"] == "healthai-nutrition-recommender-v1"
+    assert body["sportModel"]["enabled"] is True
+    assert body["sportModel"]["engineAvailable"] is True
+    assert body["sportModel"]["engineType"] == "rules-scoring"
+    assert body["sportModel"]["trainedModelAvailable"] is False
+    assert body["sportModel"]["modelAvailable"] is False
+    assert body["sportModel"]["fallbackAvailable"] is True
+    assert body["sportModel"]["fallbackUsedByDefault"] is False
+    assert body["sportModel"]["modelName"] == "healthai-sport-recommender-v1"
 
 
 @pytest.mark.anyio

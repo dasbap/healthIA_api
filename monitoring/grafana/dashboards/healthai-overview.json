@@ -93,7 +93,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "probe_success{job=\"healthai-http-availability\",instance=\"http://localhost:5173\"}",
+          "expr": "probe_success{job=\"healthai-http-availability\",instance=\"http://host.docker.internal:5173\"}",
           "instant": true,
           "legendFormat": "Frontend",
           "range": false,
@@ -174,7 +174,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "probe_success{job=\"healthai-http-availability\",instance=\"http://localhost:8000/health\"}",
+          "expr": "probe_success{job=\"healthai-http-availability\",instance=\"http://ai-service:8000/health\"}",
           "instant": true,
           "legendFormat": "API IA",
           "range": false,
@@ -255,7 +255,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "probe_success{job=\"healthai-http-availability\",instance=\"http://localhost:3000/health\"}",
+          "expr": "probe_success{job=\"healthai-http-availability\",instance=\"http://host.docker.internal:3000/health\"}",
           "instant": true,
           "legendFormat": "Backend",
           "range": false,
@@ -336,7 +336,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "probe_success{job=\"healthai-http-availability\",instance=\"http://localhost:9091/-/ready\"}",
+          "expr": "probe_success{job=\"healthai-http-availability\",instance=\"http://prometheus:9091/-/ready\"}",
           "instant": true,
           "legendFormat": "Prometheus",
           "range": false,
@@ -417,7 +417,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "probe_success{job=\"healthai-http-availability\",instance=\"http://localhost:3002/api/health\"}",
+          "expr": "probe_success{job=\"healthai-http-availability\",instance=\"http://grafana:3002/api/health\"}",
           "instant": true,
           "legendFormat": "Grafana",
           "range": false,

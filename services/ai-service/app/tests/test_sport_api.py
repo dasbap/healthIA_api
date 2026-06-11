@@ -21,6 +21,15 @@ async def test_sport_recommendation(api_client):
     assert response.status_code == 200
     assert body["type"] == "sport"
     assert body["recommendationId"].startswith("rec_sport_")
+    assert body["id"] == body["recommendationId"]
+    assert body["userId"] == "sport_user"
     assert body["duration"] == 30
+    assert body["durationMinutes"] == 30
+    assert body["sessionsPerWeek"] == 3
+    assert body["scoreLabel"]
+    assert body["summary"]
     assert body["exercises"]
+    assert body["precautions"]
     assert body["warning"]
+    assert body["model"] == "healthai-sport-recommender-v1"
+    assert body["fallbackUsed"] is False

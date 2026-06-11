@@ -7,11 +7,14 @@ import { Topbar } from './Topbar';
 
 export function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [fallbackActive, setFallbackActive] = useState(env.useMocks);
+  const [apiMode, setApiMode] = useState<'active' | 'forced-mock' | 'api-error'>(
+    env.useMocks ? 'forced-mock' : 'active'
+  );
 
   useEffect(() => {
-    function handleApiFallback() {
-      setFallbackActive(true);
+    function handleApiFallback(event: Event) {
+      const reason = (event as CustomEvent<{ reason?: 'forced-mock' | 'api-error' }>).detail?.reason;
+      setApiMode(reason === 'forced-mock' ? 'forced-mock' : 'api-error');
     }
 
     window.addEventListener(apiFallbackEventName, handleApiFallback);
@@ -25,11 +28,20 @@ export function AppLayout() {
       </a>
       <Sidebar isOpen={sidebarOpen} onNavigate={() => setSidebarOpen(false)} />
       <div className="app-main">
-        <Topbar onMenuClick={() => setSidebarOpen((open) => !open)} />
-        {fallbackActive ? (
+        <Topbar
+          onMenuClick={() => setSidebarOpen((open) => !open)}
+          apiStatusLabel={
+            apiMode === 'forced-mock'
+              ? 'Mode démo frontend'
+              : apiMode === 'api-error'
+                ? 'API IA indisponible'
+                : 'API IA active'
+          }
+        />
+        {apiMode !== 'active' ? (
           <div className="mock-banner" role="status" aria-live="polite">
-            {env.useMocks
-              ? 'Mode démo : les recommandations affichées proviennent des mocks frontend tant que l’API IA n’est pas connectée.'
+            {apiMode === 'forced-mock'
+              ? 'Mode démo frontend : les réponses affichées proviennent des mocks locaux.'
               : 'API IA indisponible : affichage temporaire des mocks frontend.'}
           </div>
         ) : null}

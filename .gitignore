@@ -1,18 +1,37 @@
 # Node.js dependencies
 node_modules/
+apps/web/node_modules/
 
 # Python dependencies
 __pycache__/
+**/__pycache__/
 *.pyc
 *.pyo
 *.pyd
+.venv/
+venv/
 
 # Environment variables
 .env
+.env.*
+!.env.example
+apps/web/.env
+apps/web/.env.*
+!apps/web/.env.example
+services/ai-service/.env
+services/ai-service/.env.*
+!services/ai-service/.env.example
 
 # Docker
 *.log
 docker-compose.override.yml
+
+# Build and test outputs
+dist/
+build/
+coverage/
+.pytest_cache/
+.vite/
 
 # IDE files
 .vscode/
@@ -27,15 +46,13 @@ Thumbs.db
 mongodb_data/
 
 # AI Service - données et modèles
-ai-service/data/raw/
-ai-service/data/processed/
-ai-service/data/training/
-ai-service/data/models/
-ai-service/data/sample_images/
-ai-service/notebooks/.ipynb_checkpoints/
-ai-service/.ipynb_checkpoints/
+services/ai-service/data/raw/
+services/ai-service/data/processed/
+services/ai-service/data/training/
+services/ai-service/data/models/*
+!services/ai-service/data/models/.gitkeep
+services/ai-service/data/sample_images/
+services/ai-service/app/models/
+services/ai-service/notebooks/.ipynb_checkpoints/
+services/ai-service/.ipynb_checkpoints/
 **/.ipynb_checkpoints/
-ai-service/**/__pycache__/
-ai-service/.env
-
-venv/

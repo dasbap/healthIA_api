@@ -1,6 +1,7 @@
 import os
 
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "raw/nutrition")
+ROBOFLOW_API_KEY_ENV = "ROBOFLOW_API_KEY"
 
 def download_dataset():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -13,7 +14,10 @@ def download_dataset():
     
     try:
         from roboflow import Roboflow
-        rf = Roboflow(api_key="0SGNDkoU0qibztM89kqi")
+        api_key = os.getenv(ROBOFLOW_API_KEY_ENV)
+        if not api_key:
+            raise RuntimeError(f"Variable d'environnement {ROBOFLOW_API_KEY_ENV} manquante.")
+        rf = Roboflow(api_key=api_key)
         project = rf.workspace("juan-workspace").project("food-types-po0yz")
         version = project.version(3)
         version.download("folder")

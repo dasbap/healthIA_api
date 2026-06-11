@@ -30,7 +30,7 @@ describe('MealAnalysisPage', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Analyser le repas/i }));
 
-    expect(screen.getByText(/modèle vision démo analyse/i)).toBeInTheDocument();
+    expect(screen.getByText(/modèle vision analyse/i)).toBeInTheDocument();
     resolveAnalysis(mockMealAnalysisResponse());
     expect(await screen.findByText(/Riz complet/i)).toBeInTheDocument();
     expect(screen.getByText(/620 kcal/i)).toBeInTheDocument();
@@ -81,6 +81,7 @@ describe('MealAnalysisPage', () => {
     expect((await screen.findAllByText(/Analyse estimée/i)).length).toBeGreaterThan(0);
     expect(analyzeMealMock).toHaveBeenCalledWith(
       expect.objectContaining({
+        userId: 'demo-user',
         file,
         fileName: 'assiette-sante.png'
       })

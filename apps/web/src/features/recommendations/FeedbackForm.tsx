@@ -1,11 +1,18 @@
 import { FormEvent, useState } from 'react';
 import { sendFeedback } from '../../api/recommendationsApi';
+import { defaultUserProfile } from '../../api/usersApi';
 import { Alert } from '../../components/ui/Alert';
 import { Button } from '../../components/ui/Button';
 import { Select } from '../../components/ui/Select';
 import { Textarea } from '../../components/ui/Textarea';
 
-export function FeedbackForm({ recommendationId }: { recommendationId: string }) {
+export function FeedbackForm({
+  recommendationId,
+  userId = defaultUserProfile.userId
+}: {
+  recommendationId: string;
+  userId?: string;
+}) {
   const [isSent, setIsSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -23,7 +30,7 @@ export function FeedbackForm({ recommendationId }: { recommendationId: string })
     setIsLoading(true);
     setError('');
     try {
-      await sendFeedback(recommendationId, Number(form.get('rating')), comment);
+      await sendFeedback(recommendationId, userId, Number(form.get('rating')), comment);
       setIsSent(true);
     } catch {
       setError('Le feedback n’a pas pu être envoyé. En mode démo, il reste simulé localement.');
@@ -60,7 +67,7 @@ export function FeedbackForm({ recommendationId }: { recommendationId: string })
       <Button type="submit" disabled={isLoading}>
         {isLoading ? 'Envoi...' : 'Envoyer le feedback'}
       </Button>
-      {isSent ? <Alert tone="success" title="Feedback enregistré">Merci, la confirmation reste locale en mode démo.</Alert> : null}
+      {isSent ? <Alert tone="success" title="Feedback enregistré">Merci, le feedback a été envoyé avec le profil {userId}.</Alert> : null}
     </form>
   );
 }

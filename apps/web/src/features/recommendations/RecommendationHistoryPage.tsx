@@ -8,6 +8,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Card, CardHeader } from '../../components/ui/Card';
 import { Select } from '../../components/ui/Select';
 import { routes } from '../../config/routes';
+import { useUserProfile } from '../../hooks/useUserProfile';
 
 const typeLabels = {
   all: 'Tous',
@@ -17,7 +18,11 @@ const typeLabels = {
 };
 
 export function RecommendationHistoryPage() {
-  const { data = [], isLoading } = useQuery({ queryKey: ['recommendations'], queryFn: getRecommendationHistory });
+  const { profile } = useUserProfile();
+  const { data = [], isLoading } = useQuery({
+    queryKey: ['recommendations', profile.userId],
+    queryFn: () => getRecommendationHistory(profile.userId)
+  });
   const [filter, setFilter] = useState<RecommendationType | 'all'>('all');
 
   const filtered = useMemo(() => {
@@ -25,7 +30,7 @@ export function RecommendationHistoryPage() {
   }, [data, filter]);
 
   if (isLoading) {
-    return <LoadingState label="Chargement de l’historique demo..." />;
+    return <LoadingState label="Chargement de l’historique IA..." />;
   }
 
   return (
@@ -34,7 +39,7 @@ export function RecommendationHistoryPage() {
         <div>
           <p className="eyebrow">Historique</p>
           <h1>Recommandations et analyses IA</h1>
-          <p>Liste démo filtrable pour présenter le suivi utilisateur.</p>
+          <p>Résultats enregistrés pour le profil courant : {profile.userId}.</p>
         </div>
       </section>
       <Card>
@@ -64,7 +69,7 @@ export function RecommendationHistoryPage() {
           </div>
         </CardHeader>
         {filtered.length === 0 ? (
-          <EmptyState title="Aucun résultat" message="Aucune recommandation démo ne correspond à ce filtre." />
+          <EmptyState title="Aucun résultat" message="Aucune recommandation API ne correspond à ce profil et à ce filtre." />
         ) : (
           <div className="history-list">
             {filtered.map((item) => (
