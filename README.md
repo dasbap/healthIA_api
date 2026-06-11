@@ -167,7 +167,14 @@ Ces moteurs ne sont pas presentes comme des modeles ML entraines. Les artefacts 
 
 ## Tests
 
-Backend :
+La CI GitHub Actions lance ces controles sur `mb_2` et sur les pull requests vers `mb_2` :
+
+- API NestJS : installation, typecheck, tests unitaires, tests e2e avec MongoDB, build.
+- API IA FastAPI : installation Python 3.11 et `pytest`.
+- Frontend React : installation, typecheck, tests Vitest, build.
+- Docker Compose : validation `docker compose config`.
+
+API IA :
 
 ```bash
 cd services/ai-service
@@ -178,7 +185,18 @@ Frontend :
 
 ```bash
 cd apps/web
+npm run typecheck
 npm run test
+npm run build
+```
+
+API NestJS :
+
+```bash
+cd services/api
+npm run typecheck
+npm run test
+npm run test:e2e
 npm run build
 ```
 
