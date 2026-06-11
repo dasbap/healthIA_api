@@ -167,18 +167,51 @@ Ces moteurs ne sont pas presentes comme des modeles ML entraines. Les artefacts 
 
 ## Tests
 
-Backend :
+La CI GitHub Actions lance ces controles sur `mb_2` et sur les pull requests vers `mb_2` :
+
+- API NestJS : installation, lint ESLint, typecheck, tests unitaires, tests e2e avec MongoDB, build.
+- API IA FastAPI : installation Python 3.11, lint Ruff, `pytest` et quality gates IA.
+- AI quality gates : job dedie aux scenarios qualite nutrition/sport et au statut des moteurs IA.
+- Frontend React : installation, lint ESLint, typecheck, tests Vitest, build.
+- Docker Compose : validation `docker compose config`.
+
+API IA :
 
 ```bash
 cd services/ai-service
+pip install -r requirements.txt -r requirements-dev.txt
+python -m ruff check app scripts
 python -m pytest
 ```
+
+Les quality gates IA valident :
+
+- le statut explicite des moteurs nutrition/sport ;
+- les scores minimaux de scenarios nutrition et sport ;
+- le respect des allergies et regimes ;
+- l'adaptation sport en cas de fatigue ou limitation ;
+- l'absence de fallback par defaut sur les moteurs rules/scoring.
+
+Ils ne prouvent pas qu'un modele ML entraine a progresse : les artefacts entraines nutrition/sport ne sont pas inclus dans ce depot. La CI signale donc clairement que les moteurs actifs sont des moteurs rules/scoring et que `trainedModelAvailable=false` tant qu'un vrai bundle modele n'est pas livre.
 
 Frontend :
 
 ```bash
 cd apps/web
+npm run lint
+npm run typecheck
 npm run test
+npm run build
+```
+
+API NestJS :
+
+```bash
+cd services/api
+npm run lint
+npm run typecheck
+npm run test
+npm run test:e2e
 npm run build
 ```
 

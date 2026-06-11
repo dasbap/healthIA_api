@@ -55,7 +55,10 @@ async def analyze_meal(request: Request) -> dict:
         if not image_bytes:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Le fichier image est vide.")
         if len(image_bytes) > MAX_IMAGE_SIZE_BYTES:
-            raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="Le fichier image depasse 8 Mo.")
+            raise HTTPException(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                detail="Le fichier image depasse 8 Mo.",
+            )
 
         try:
             with Image.open(BytesIO(image_bytes)) as image:
@@ -68,7 +71,7 @@ async def analyze_meal(request: Request) -> dict:
 
         return await MealAnalysisService().analyze_upload(
             user_id=str(form.get("userId") or form.get("user_id") or "profile_demo_001"),
-            file_name=getattr(uploaded_file, "filename"),
+            file_name=uploaded_file.filename,
             image_bytes=image_bytes,
             notes=str(form.get("notes") or form.get("mealType") or "") or None,
         )

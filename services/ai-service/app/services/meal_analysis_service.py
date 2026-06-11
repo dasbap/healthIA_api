@@ -1,7 +1,7 @@
+from app.core.metrics import metrics
 from app.database.repositories.ai_log_repository import AiLogRepository
 from app.database.repositories.meal_analysis_repository import MealAnalysisRepository
 from app.database.repositories.recommendation_repository import RecommendationRepository
-from app.core.metrics import metrics
 from app.recommender.meal_image_analyzer import analyze_meal_image, analyze_meal_image_bytes
 from app.schemas.meal_analysis_schema import MealAnalysisRequest
 from app.services.recommendation_mapper import build_recommendation_id
@@ -14,7 +14,11 @@ class MealAnalysisService:
         self.logs = AiLogRepository()
 
     async def analyze(self, payload: MealAnalysisRequest) -> dict:
-        source = str(payload.normalized_image_url) if payload.normalized_image_url else payload.normalized_file_name or "image_locale"
+        source = (
+            str(payload.normalized_image_url)
+            if payload.normalized_image_url
+            else payload.normalized_file_name or "image_locale"
+        )
         notes = payload.notes or payload.normalized_file_name
         raw_analysis = analyze_meal_image(source, notes)
         return await self._store_analysis(
@@ -42,7 +46,9 @@ class MealAnalysisService:
         protein = round(sum(float(food.get("proteins", 0)) for food in foods))
         carbs = round(sum(float(food.get("carbs", 0)) for food in foods))
         fat = round(sum(float(food.get("fats", 0)) for food in foods))
-        average_confidence = round(sum(float(food.get("confidence", 0)) for food in foods) / len(foods), 2) if foods else 0.0
+        average_confidence = (
+            round(sum(float(food.get("confidence", 0)) for food in foods) / len(foods), 2) if foods else 0.0
+        )
         imbalances = list(raw_analysis.get("warnings", []))
         if carbs > protein * 1.5:
             imbalances.append("Glucides eleves")
@@ -61,7 +67,9 @@ class MealAnalysisService:
 
         analysis_id = build_recommendation_id("meal")
         title = "Analyse repas par image"
-        model_name = raw_analysis.get("model") or ("healthai-vision-fallback-v1" if fallback_used else "healthai-vision-local-v1")
+        model_name = raw_analysis.get("model") or (
+            "healthai-vision-fallback-v1" if fallback_used else "healthai-vision-local-v1"
+        )
         document = {
             "id": analysis_id,
             "analysisId": analysis_id,

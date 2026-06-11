@@ -1,12 +1,12 @@
-from contextlib import asynccontextmanager
 import logging
+from contextlib import asynccontextmanager
 from time import perf_counter
 
 from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.exceptions import ServiceUnavailableError, service_unavailable_handler
 from app.core.config import settings
+from app.core.exceptions import ServiceUnavailableError, service_unavailable_handler
 from app.core.logging import configure_logging
 from app.core.metrics import metrics
 from app.database.mongo import close_mongo, connect_mongo

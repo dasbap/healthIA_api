@@ -1,4 +1,4 @@
-import { Suspense, lazy, type ComponentType } from 'react';
+import { Suspense, lazy, type ComponentType, type ReactElement } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
 import { LoadingState } from '../components/states/LoadingState';
@@ -26,7 +26,7 @@ const RecommendationHistoryPage = lazyNamed(
 );
 const SportRecommendPage = lazyNamed(() => import('../features/sport/SportRecommendPage'), 'SportRecommendPage');
 
-function page(element: JSX.Element) {
+function page(element: ReactElement) {
   return <Suspense fallback={<LoadingState label="Chargement de la page..." />}>{element}</Suspense>;
 }
 
@@ -55,8 +55,7 @@ export const router = createBrowserRouter(
   ],
   {
     future: {
-      v7_relativeSplatPath: true,
-      v7_startTransition: true
+      v7_relativeSplatPath: true
     }
   }
 );

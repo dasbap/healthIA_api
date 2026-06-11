@@ -65,7 +65,10 @@ async def test_meal_analysis_can_return_real_vision_result_when_model_is_mocked(
             }
         ]
 
-    monkeypatch.setattr("app.recommender.meal_image_analyzer.analyze_image_bytes_with_vision_model", fake_analyze_image_bytes)
+    monkeypatch.setattr(
+        "app.recommender.meal_image_analyzer.analyze_image_bytes_with_vision_model",
+        fake_analyze_image_bytes,
+    )
     monkeypatch.setattr("app.recommender.meal_image_analyzer.active_vision_model_name", lambda: "unit-test-food-model")
 
     response = await api_client.post(
