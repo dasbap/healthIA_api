@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Activity, BrainCircuit, ExternalLink, Gauge, Salad, Server } from 'lucide-react';
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { checkApiHealth } from '../../api/httpClient';
-import { getRecommendationHistory } from '../../api/recommendationsApi';
+import { getRecommendationHistory, type RecommendationHistoryItem } from '../../api/recommendationsApi';
 import { Alert } from '../../components/ui/Alert';
 import { Card, CardHeader } from '../../components/ui/Card';
 import { LoadingState } from '../../components/states/LoadingState';
@@ -27,7 +27,10 @@ const repartitionData = [
 ];
 
 export function DashboardPage() {
-  const { data = [], isLoading } = useQuery({ queryKey: ['recommendations'], queryFn: getRecommendationHistory });
+  const { data = [], isLoading } = useQuery<RecommendationHistoryItem[]>({
+    queryKey: ['recommendations'],
+    queryFn: () => getRecommendationHistory()
+  });
   const { data: apiHealth } = useQuery({ queryKey: ['api-health'], queryFn: checkApiHealth });
   const averageScore = data.length ? Math.round((data.reduce((sum, item) => sum + item.score, 0) / data.length) * 100) : 0;
   const mealAnalyses = data.filter((item) => item.type === 'meal-analysis').length;
