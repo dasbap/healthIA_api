@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import type { NutritionRecommendationRequest } from '../../api/aiApi';
+import type { UserProfile } from '../../api/usersApi';
 import { Alert } from '../../components/ui/Alert';
 import { Button } from '../../components/ui/Button';
 import { Card, CardHeader } from '../../components/ui/Card';
@@ -8,6 +9,7 @@ import { Select } from '../../components/ui/Select';
 import { Textarea } from '../../components/ui/Textarea';
 
 type NutritionFormProps = {
+  profile: UserProfile;
   onSubmit: (payload: NutritionRecommendationRequest) => void;
   isLoading: boolean;
 };
@@ -21,8 +23,8 @@ function validatePayload(payload: NutritionRecommendationRequest) {
     errors.goal = 'Choisissez un objectif nutritionnel.';
   }
 
-  if (!Number.isFinite(payload.targetCalories) || payload.targetCalories < 300 || payload.targetCalories > 2000) {
-    errors.targetCalories = 'Indiquez une valeur entre 300 et 2000 kcal.';
+  if (!Number.isFinite(payload.targetCalories) || payload.targetCalories < 300 || payload.targetCalories > 4000) {
+    errors.targetCalories = 'Indiquez une valeur entre 300 et 4000 kcal.';
   }
 
   if (!Number.isFinite(payload.budget) || payload.budget < 10) {
@@ -36,19 +38,22 @@ function validatePayload(payload: NutritionRecommendationRequest) {
   return errors;
 }
 
-export function NutritionForm({ onSubmit, isLoading }: NutritionFormProps) {
+export function NutritionForm({ profile, onSubmit, isLoading }: NutritionFormProps) {
   const [errors, setErrors] = useState<NutritionFormErrors>({});
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const payload = {
+      userId: profile.userId,
       goal: String(form.get('goal')),
       targetCalories: Number(form.get('targetCalories')),
       budget: Number(form.get('budget')),
       allergies: String(form.get('allergies')),
       diet: String(form.get('diet')),
-      preferences: String(form.get('preferences'))
+      dietaryRestrictions: String(form.get('dietaryRestrictions')),
+      preferences: String(form.get('preferences')),
+      activityLevel: String(form.get('activityLevel'))
     };
     const nextErrors = validatePayload(payload);
 
@@ -66,7 +71,7 @@ export function NutritionForm({ onSubmit, isLoading }: NutritionFormProps) {
       <CardHeader>
         <div>
           <h2>Objectif nutritionnel</h2>
-          <p>Contraintes utilisateur pour simuler une recommandation personnalisée et expliquer les choix proposés.</p>
+          <p>Champs transmis au endpoint nutrition pour générer une recommandation traçable.</p>
         </div>
       </CardHeader>
       <form className="form-grid two-cols" onSubmit={handleSubmit} noValidate>
@@ -80,7 +85,7 @@ export function NutritionForm({ onSubmit, isLoading }: NutritionFormProps) {
         <Select
           label="Objectif"
           name="goal"
-          defaultValue="perte de graisse"
+          defaultValue={profile.goal}
           required
           error={errors.goal}
           hint="Permet d’adapter les portions, le niveau calorique et les conseils."
@@ -95,9 +100,9 @@ export function NutritionForm({ onSubmit, isLoading }: NutritionFormProps) {
           label="Calories cibles"
           name="targetCalories"
           type="number"
-          defaultValue={560}
+          defaultValue={profile.targetCalories}
           min={300}
-          max={2000}
+          max={4000}
           required
           hint="Valeur indicative pour un repas ou une journée selon le scénario présenté."
           error={errors.targetCalories}
@@ -106,17 +111,17 @@ export function NutritionForm({ onSubmit, isLoading }: NutritionFormProps) {
           label="Budget hebdomadaire"
           name="budget"
           type="number"
-          defaultValue={65}
+          defaultValue={profile.budgetPerWeek}
           min={10}
           required
           hint="Utilisé pour vérifier si la proposition reste réaliste."
           error={errors.budget}
         />
-        <Input label="Allergies" name="allergies" defaultValue="Noisettes" hint="Séparez plusieurs allergies par des virgules." />
+        <Input label="Allergies" name="allergies" defaultValue={profile.allergies.join(', ')} hint="Séparez plusieurs allergies par des virgules." />
         <Select
           label="Régime alimentaire"
           name="diet"
-          defaultValue="omnivore"
+          defaultValue={profile.diet}
           required
           error={errors.diet}
           options={[
@@ -126,10 +131,28 @@ export function NutritionForm({ onSubmit, isLoading }: NutritionFormProps) {
             { label: 'Sans lactose', value: 'sans lactose' }
           ]}
         />
+        <Select
+          label="Niveau d’activité"
+          name="activityLevel"
+          defaultValue={profile.activityLevel}
+          hint="Aide l’API IA à ajuster les portions et les conseils."
+          options={[
+            { label: 'Faible', value: 'faible' },
+            { label: 'Modérée', value: 'moderee' },
+            { label: 'Élevée', value: 'elevee' }
+          ]}
+        />
+        <Textarea
+          label="Restrictions alimentaires"
+          name="dietaryRestrictions"
+          defaultValue={profile.dietaryRestrictions.join(', ')}
+          rows={3}
+          hint="Conservé dans le payload et visible côté audit même si le moteur nutrition exploite surtout régime/allergies."
+        />
         <Textarea
           label="Préférences alimentaires"
           name="preferences"
-          defaultValue="Repas rapides, légumes verts, poulet"
+          defaultValue={profile.foodPreferences.join(', ')}
           rows={4}
           hint="Exemples : temps de préparation, aliments appréciés, organisation des repas."
         />

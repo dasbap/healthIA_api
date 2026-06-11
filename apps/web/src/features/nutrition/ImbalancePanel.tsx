@@ -12,7 +12,7 @@ export function ImbalancePanel({ imbalances, suggestions = [] }: ImbalancePanelP
       <CardHeader>
         <div>
           <h2>Déséquilibres et pistes</h2>
-          <p>Lecture démo des signaux nutritionnels principaux.</p>
+          <p>Lecture des signaux nutritionnels principaux.</p>
         </div>
       </CardHeader>
       <div className="two-column-list">

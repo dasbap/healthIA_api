@@ -8,7 +8,7 @@ export function DetectedFoodsList({ foods }: { foods: DetectedFood[] }) {
       <CardHeader>
         <div>
           <h2>Aliments détectés</h2>
-          <p>Confiance estimée par le modèle vision démo.</p>
+          <p>Confiance estimée par le modèle vision ou le fallback backend.</p>
         </div>
       </CardHeader>
       <div className="list-stack">

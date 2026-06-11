@@ -6,9 +6,11 @@ import { LoadingState } from '../../components/states/LoadingState';
 import { Badge } from '../../components/ui/Badge';
 import { Card, CardHeader } from '../../components/ui/Card';
 import { routes } from '../../config/routes';
+import { useUserProfile } from '../../hooks/useUserProfile';
 import { FeedbackForm } from './FeedbackForm';
 
 export function RecommendationDetailPage() {
+  const { profile } = useUserProfile();
   const { id = 'rec_001' } = useParams();
   const { data, isError, isLoading } = useQuery({
     queryKey: ['recommendation-detail', id],
@@ -16,7 +18,7 @@ export function RecommendationDetailPage() {
   });
 
   if (isError) {
-    return <ErrorState title="Recommandation introuvable" message="Aucun détail ne correspond à cet identifiant en mode démo." />;
+    return <ErrorState title="Recommandation introuvable" message="Aucun détail ne correspond à cet identifiant API ou mock." />;
   }
 
   if (isLoading || !data) {
@@ -29,7 +31,7 @@ export function RecommendationDetailPage() {
         <div>
           <p className="eyebrow">Détail recommandation</p>
           <h1>{data.title}</h1>
-          <p>Trace explicable de l’entrée utilisateur, du résultat IA et du modèle fictif.</p>
+          <p>Trace explicable de l’entrée utilisateur, du résultat IA et du modèle utilisé.</p>
         </div>
         <Link className="text-link" to={routes.recommendations}>
           Retour à l’historique
@@ -74,10 +76,10 @@ export function RecommendationDetailPage() {
         <CardHeader>
           <div>
             <h2>Feedback utilisateur</h2>
-            <p>Évaluation locale pour simuler l’amélioration continue.</p>
+            <p>Évaluation envoyée avec le profil courant : {profile.userId}.</p>
           </div>
         </CardHeader>
-        <FeedbackForm recommendationId={data.id} />
+        <FeedbackForm recommendationId={data.id} userId={profile.userId} />
       </Card>
     </div>
   );

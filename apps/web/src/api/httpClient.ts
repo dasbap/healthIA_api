@@ -4,6 +4,8 @@ type RequestOptions = RequestInit & {
   fallbackLabel?: string;
 };
 
+export const apiFallbackEventName = 'healthai-api-fallback';
+
 export class ApiError extends Error {
   status?: number;
 
@@ -15,12 +17,16 @@ export class ApiError extends Error {
 }
 
 export async function httpClient<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const headers = new Headers(options.headers);
+  const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+
+  if (!isFormData && !headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
+
   const response = await fetch(`${env.apiBaseUrl}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers
-    },
-    ...options
+    ...options,
+    headers
   });
 
   if (!response.ok) {
@@ -38,17 +44,27 @@ export function shouldUseMocks() {
   return env.useMocks;
 }
 
+function reportApiFallback(reason: 'forced-mock' | 'api-error') {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.dispatchEvent(new CustomEvent(apiFallbackEventName, { detail: { reason } }));
+}
+
 export async function withApiFallback<T>(
   request: () => Promise<T>,
   fallback: () => Promise<T> | T
 ): Promise<T> {
   if (shouldUseMocks()) {
+    reportApiFallback('forced-mock');
     return fallback();
   }
 
   try {
     return await request();
   } catch {
+    reportApiFallback('api-error');
     return fallback();
   }
 }

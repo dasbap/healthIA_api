@@ -18,7 +18,7 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets:
-          - localhost:9116
+          - blackbox-exporter:9116
         labels:
           service: blackbox-exporter
           domaine: observabilite
@@ -33,11 +33,11 @@ scrape_configs:
         - http_2xx
     static_configs:
       - targets:
-          - http://localhost:5173
-          - http://localhost:3000/health
-          - http://localhost:8000/health
-          - http://localhost:9091/-/ready
-          - http://localhost:3002/api/health
+          - http://host.docker.internal:5173
+          - http://host.docker.internal:3000/health
+          - http://ai-service:8000/health
+          - http://prometheus:9091/-/ready
+          - http://grafana:3002/api/health
         labels:
           projet: healthai-coach
           check_type: disponibilite_http
@@ -49,21 +49,20 @@ scrape_configs:
           - __param_target
         target_label: instance
       - target_label: __address__
-        replacement: localhost:9116
+        replacement: blackbox-exporter:9116
 
-  # Metriques applicatives pretes pour les futurs backends.
-  # Aujourd'hui les dossiers fastapi/ et nestjs/ ne contiennent pas encore
-  # d'application complete ; ces cibles passeront UP quand /metrics existera.
+  # Metriques applicatives de l'API IA FastAPI et cible NestJS optionnelle.
+  # La cible NestJS peut rester DOWN tant que la gateway n'est pas lancee.
   - job_name: healthai-api-metrics
     metrics_path: /metrics
     static_configs:
       - targets:
-          - localhost:3000
+          - host.docker.internal:3000
         labels:
           service: backend-gateway
           domaine: api
       - targets:
-          - localhost:8000
+          - ai-service:8000
         labels:
           service: ai-service
           domaine: ia

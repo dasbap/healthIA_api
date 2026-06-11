@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import type { SportRecommendationRequest } from '../../api/aiApi';
+import type { UserProfile } from '../../api/usersApi';
 import { Alert } from '../../components/ui/Alert';
 import { Button } from '../../components/ui/Button';
 import { Card, CardHeader } from '../../components/ui/Card';
@@ -8,6 +9,7 @@ import { Select } from '../../components/ui/Select';
 import { Textarea } from '../../components/ui/Textarea';
 
 type SportFormProps = {
+  profile: UserProfile;
   onSubmit: (payload: SportRecommendationRequest) => void;
   isLoading: boolean;
 };
@@ -36,16 +38,18 @@ function validatePayload(payload: SportRecommendationRequest) {
   return errors;
 }
 
-export function SportForm({ onSubmit, isLoading }: SportFormProps) {
+export function SportForm({ profile, onSubmit, isLoading }: SportFormProps) {
   const [errors, setErrors] = useState<SportFormErrors>({});
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const payload = {
+      userId: profile.userId,
       goal: String(form.get('goal')),
       level: String(form.get('level')),
       duration: Number(form.get('duration')),
+      sessionsPerWeek: Number(form.get('sessionsPerWeek')),
       equipment: String(form.get('equipment')),
       preferences: String(form.get('preferences')),
       limitations: String(form.get('limitations')),
@@ -67,7 +71,7 @@ export function SportForm({ onSubmit, isLoading }: SportFormProps) {
       <CardHeader>
         <div>
           <h2>Profil sportif</h2>
-          <p>Critères du programme démo.</p>
+          <p>Critères transmis au endpoint sport avec le profil courant.</p>
         </div>
       </CardHeader>
       <form className="form-grid two-cols" onSubmit={handleSubmit} noValidate>
@@ -81,7 +85,7 @@ export function SportForm({ onSubmit, isLoading }: SportFormProps) {
         <Select
           label="Objectif"
           name="goal"
-          defaultValue="perte de graisse"
+          defaultValue={profile.goal}
           required
           error={errors.goal}
           hint="Adapte l’intensité et les exercices."
@@ -95,7 +99,7 @@ export function SportForm({ onSubmit, isLoading }: SportFormProps) {
         <Select
           label="Niveau"
           name="level"
-          defaultValue="debutant"
+          defaultValue={profile.sportLevel}
           required
           error={errors.level}
           options={[
@@ -108,25 +112,34 @@ export function SportForm({ onSubmit, isLoading }: SportFormProps) {
           label="Durée disponible (min)"
           name="duration"
           type="number"
-          defaultValue={30}
+          defaultValue={profile.durationMinutes}
           min={10}
           max={120}
           required
           error={errors.duration}
           hint="Entre 10 et 120 minutes."
         />
-        <Input label="Matériel" name="equipment" defaultValue="Sans matériel, tapis de sol" />
+        <Input
+          label="Séances par semaine"
+          name="sessionsPerWeek"
+          type="number"
+          defaultValue={profile.sessionsPerWeek}
+          min={1}
+          max={7}
+          hint="Utilisé par l’API IA pour ajuster le volume d’entraînement."
+        />
+        <Input label="Matériel" name="equipment" defaultValue={profile.equipment.join(', ')} />
         <Textarea
           label="Préférences"
           name="preferences"
-          defaultValue="Bas impact, marche rapide, gainage"
+          defaultValue={profile.sportPreferences.join(', ')}
           rows={3}
           hint="Activités appréciées ou à éviter."
         />
         <Textarea
           label="Limitations physiques"
           name="limitations"
-          defaultValue="Genou droit sensible"
+          defaultValue={profile.physicalLimitations.join(', ')}
           rows={3}
           hint="Douleurs, blessures ou mouvements à éviter."
         />
