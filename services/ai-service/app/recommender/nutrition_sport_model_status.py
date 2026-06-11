@@ -117,5 +117,8 @@ def _status_reason(
     if not artifacts_complete:
         return f"{kind} rules/scoring engine active; trained model bundle is incomplete."
     if not loader_available:
-        return f"{kind} rules/scoring engine active; trained artifacts exist but no compatible loader is integrated yet."
+        return (
+            f"{kind} rules/scoring engine active; "
+            "trained artifacts exist but no compatible loader is integrated yet."
+        )
     return f"{kind} trained model is ready."

@@ -1,9 +1,9 @@
-from app.schemas.meal_analysis_schema import MealFoodItem
 from app.recommender.vision_model_analyzer import (
     active_vision_model_name,
     analyze_image_bytes_with_vision_model,
     analyze_with_vision_model,
 )
+from app.schemas.meal_analysis_schema import MealFoodItem
 
 
 def analyze_meal_image(image_url: str, notes: str | None = None) -> dict:

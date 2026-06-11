@@ -1,9 +1,9 @@
+from app.core.metrics import metrics
 from app.database.repositories.ai_log_repository import AiLogRepository
 from app.database.repositories.recommendation_repository import RecommendationRepository
-from app.core.metrics import metrics
 from app.recommender.nutrition_recommender import build_nutrition_fallback, build_nutrition_recommendation
 from app.schemas.nutrition_schema import NutritionRecommendationRequest
-from app.services.recommendation_mapper import utc_now_iso, build_recommendation_id
+from app.services.recommendation_mapper import build_recommendation_id, utc_now_iso
 
 
 class NutritionService:

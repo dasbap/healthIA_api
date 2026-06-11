@@ -173,7 +173,7 @@ def _classify_image(image: object, bundle: tuple[object, object, object, object,
     top_probabilities, top_indices = torch_module.topk(probabilities, k=top_k)
 
     foods = []
-    for rank, (probability, index) in enumerate(zip(top_probabilities, top_indices)):
+    for rank, (probability, index) in enumerate(zip(top_probabilities, top_indices, strict=False)):
         label = model.config.id2label[index.item()]
         confidence = round(probability.item(), 4)
         nutrition = _nutrition_for_label(label)
@@ -199,8 +199,8 @@ def _load_model_bundle() -> tuple[object, object, object, object, str, str] | No
 
     if _MODEL_BUNDLE is None:
         try:
-            from PIL import Image
             import torch
+            from PIL import Image
             from transformers import AutoImageProcessor, AutoModelForImageClassification
 
             model_source = str(MODEL_PATH) if MODEL_PATH.exists() else settings.vision_model_name
