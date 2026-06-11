@@ -7,6 +7,7 @@
     "start": "node dist/src/main.js",
     "start:dev": "node node_modules/@nestjs/cli/bin/nest.js start --watch",
     "openapi:export": "node node_modules/ts-node/dist/bin.js scripts/export-openapi.ts",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
     "test": "node node_modules/jest/bin/jest.js",
     "test:e2e": "node node_modules/jest/bin/jest.js --config ./test/jest-e2e.json"
   },
