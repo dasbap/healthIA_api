@@ -167,7 +167,7 @@ Ces moteurs ne sont pas presentes comme des modeles ML entraines. Les artefacts 
 
 ## Tests
 
-La CI GitHub Actions lance ces controles sur `mb_2` et sur les pull requests vers `mb_2` :
+La CI GitHub Actions lance ces controles sur chaque branche poussee et sur les pull requests vers `mb_2` :
 
 - API NestJS : installation, lint ESLint, typecheck, tests unitaires, tests e2e avec MongoDB, build.
 - API IA FastAPI : installation Python 3.11, lint Ruff, `pytest` et quality gates IA.
